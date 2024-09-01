@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<string.h>
-#define TFL 2000
+#define TFL 500
 #define TFC 256
 
 char CaractereEspecialNaoUsado(char c){
@@ -39,43 +39,49 @@ void RetornaPalavra(char token[TFL], char linha[TFL], int *i) {
     token[tl] = '\0';
 }
 
-void SeparaTokens(char linha[TFL]){
+void SeparaTokens(char linha[TFL],ListaTokens**tokens){
 	char token[TFL];
 	int i;
 	for(i=0;i<strlen(linha);i++){
 		RetornaPalavra(token,linha,&i);
 		if(strlen(token)>0){
 			printf("%s\n",token);
+			InsereToken(&(*tokens),token);
 		}
 	}
 }
 
-void RecebeArquivo(char caminho[TFC]){
+void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 	char linha[TFL];
+	ListaTokens *tokens;
+	init(&tokens);
 	FILE*ponteiro= fopen(caminho,"r");
 	if(ponteiro==NULL)
 		printf("Seu arquivo nao existe ou nao foi encontrado");
 	else{
 		while(!feof(ponteiro)){
-			fgets(linha,sizeof(linha),ponteiro);
+			fgets(linha,sizeof(linha),ponteiro);  
 			if(strlen(linha)>1){ // quer dizer que não é apenas um ENTER geralmente sinalizando fim de função
 				printf("\n%s\n",linha);
-				SeparaTokens(linha);
+				SeparaTokens(linha,&tokens);
 			}
 			else{
+				InsereToken(&(*tokens),"FimDef");
 				//Função FIM-DEF;
 			}
-			
-			
+			InserirGeral(&(*programa),tokens);
+			init(&tokens);
 		}
 	}
 }
 
 void Executar(){
 	char caminho[TFC];
+	ListaGeral *programa;
+	init(&programa);
 	printf("Informe o caminho do arquivo .py Ex: [C://teste.py]");
 	gets(caminho);
-	RecebeArquivo(caminho);
+	RecebeArquivo(caminho,&programa);
 }
 
 int main(){
