@@ -10,81 +10,42 @@ char CaractereEspecialNaoUsado(char c){
 }
 
 char CaractereEspecialUsado(char c){
-	if(c=='+' || c=='-' || c=='/' || c=='*' || c=='(' || c==')' || c=='%' || c=='=' || c==34 || c==44)
+	if(c=='+' || c=='-' || c=='/' || c=='*' || c=='(' || c==')' || c=='%' || c=='=' || c==34 || c==39)
 		return 1;
 	return 0;
 }
 
-/*void RetornaPalavra(char token[TFL],char linha[TFL],int i){
-	for(;i<strlen(linha);i++){
-		if(!CaractereEspecialNaoUsado(linha[i])){
-			if(!CaractereEspecialUsado(linha[i])){
-				token[tl]=linha[i];
-				tl++;
-			}
-			else{
-				if(tl>0){
-					token[tl]='\0';
-					printf("%s\n",token);
-				}
-				
-				token[0]=linha[i];
-				tl=1;
-				if(linha[i]==linha[i+1]){
-					token[tl]=linha[i+1];
-					tl++;
-					i++;
-				}
-				token[tl]='\0';
-				printf("%s\n",token);
-				tl=0;
-			}
-		}
-		else{
-			if(tl>0){
-				token[tl]='\0';
-				printf("%s\n",token);
-				tl=0;
-			}
-			
-		}
-	
-}*/
+void RetornaPalavra(char token[TFL], char linha[TFL], int *i) {
+    int tl = 0;
+
+    for (; *i < strlen(linha) && !CaractereEspecialNaoUsado(linha[*i]) && !CaractereEspecialUsado(linha[*i]); (*i)++) {
+        token[tl] = linha[*i];
+        tl++;
+    }
+
+    if (CaractereEspecialUsado(linha[*i])) {
+        if (tl > 0) {  // Token já está completo e foi parado por encontrar o caractere
+            (*i)--;
+        } else {  // Caractere especial é a primeira letra da string
+            token[0] = linha[*i];
+            tl = 1;
+            if (linha[*i + 1] == linha[*i] && linha[*i] != '(' && linha[*i] != ')') {
+                token[tl] = linha[*i];
+                tl++;
+                (*i)++;
+            }
+        }
+    }
+    token[tl] = '\0';
+}
 
 void SeparaTokens(char linha[TFL]){
 	char token[TFL];
-	int i,tl=0;
+	int i;
 	for(i=0;i<strlen(linha);i++){
-		if(!CaractereEspecialNaoUsado(linha[i])){
-			if(!CaractereEspecialUsado(linha[i])){
-				token[tl]=linha[i];
-				tl++;
-			}
-			else{
-				if(tl>0){
-					token[tl]='\0';
-					printf("%s\n",token);
-				}
-				
-				token[0]=linha[i];
-				tl=1;
-				if(linha[i]==linha[i+1]){
-					token[tl]=linha[i+1];
-					tl++;
-					i++;
-				}
-				token[tl]='\0';
-				printf("%s\n",token);
-				tl=0;
-			}
-		}
-		else{
-			if(tl>0){
-				token[tl]='\0';
-				printf("%s\n",token);
-				tl=0;
-			}
-			
+		RetornaPalavra(token,linha,&i);
+		if(strlen(token)>0){
+			printf("%s\n",token);
 		}
 	}
 }
