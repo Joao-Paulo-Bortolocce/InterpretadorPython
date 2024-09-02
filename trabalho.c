@@ -6,6 +6,7 @@
 
 #include"Tokens.h"
 #include"ListaPrograma.h"
+#include"PilhaVariaveis.h"
 
 
 char CaractereEspecialNaoUsado(char c){
