@@ -69,3 +69,23 @@ void PushSemTerminal(Pilha **p,char id[TFI],char token[TFL]){
 	terminal=DefineTipo(token);
 	Push(&(*p),terminal,id,token);
 }
+
+void ExibePilha(Pilha *p){
+	while(p!=0){
+		switch(p->terminal){
+			case 0:
+				printf("%s\t%d\tNULL\n",p->id,p->valor.valori);
+				break;
+			case 1:
+				printf("%s\t%f\tNULL\n",p->id,p->valor.valorf);
+				break;
+			case 2:
+				printf("%s\t%s\tNULL\n",p->id,p->valor.valors);
+				break;
+			case 3:
+				printf("%s\t-\t%d\n",p->id,p->valor.ponteiro);
+				break;
+		}
+		p=p->prox;
+	}
+}
