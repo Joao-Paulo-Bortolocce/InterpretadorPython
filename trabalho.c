@@ -7,7 +7,7 @@
 #include"Tokens.h"
 #include"ListaPrograma.h"
 #include"PilhaVariaveis.h"
-
+//Testando o pull
 
 char CaractereEspecialNaoUsado(char c){
 	if(c==32 || c==',' || c==':'|| c==10)
