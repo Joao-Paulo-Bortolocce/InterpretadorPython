@@ -98,7 +98,7 @@ void EncontraInicio(ListaGeral** programa){
 	char flag=1;
 	while(flag){
 		if(stricmp((*programa)->tokens->token,"def")==0){
-			while(stricmp((*programa)->tokens->token,"FimDef")!=0)
+			while(stricmp((*programa)->tokens->token,"@")!=0)
 				*programa=(*programa)->prox;
 			*programa=(*programa)->prox;
 		}
