@@ -64,8 +64,8 @@ void SeparaTokens(char linha[TFL],ListaTokens**tokens){
 }
 
 void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
-	char linha[TFL],flag=0;
-	int identacao=0,identacaoAtual=0;
+	char linha[TFL];
+	int identacaoAnt=0,identacaoAtual=0;
 	ListaTokens *tokens;
 	InitTokens(&tokens);
 	FILE*ponteiro= fopen(caminho,"r");
@@ -74,7 +74,7 @@ void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 	else{
 		while(!feof(ponteiro)){
 			fgets(linha,sizeof(linha),ponteiro); 
-			identacaoAtual=QtdIdentacao;
+			identacaoAtual=QtdIdentacao(linha);
 			if(strlen(linha)>1 && identacaoAtual>=identacaoAnt){ // quer dizer que não é apenas um ENTER geralmente sinalizando fim de função
 				//printf("\n%s\n",linha);
 				SeparaTokens(linha,&tokens);
@@ -84,8 +84,8 @@ void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 				strcpy(linha,"@");
 				InsereToken(&tokens,linha);
 				if(identacaoAtual<identacaoAnt)
-					SeparaTokens(linha,&tokens,&flag,int identacao);
-				//Função FIM-DEF;
+					SeparaTokens(linha,&tokens);
+				//Função FIM-DEF, FIM-IF, ...;
 			}
 			InserirGeral(&(*programa),tokens);
 			InitTokens(&tokens);
@@ -116,6 +116,7 @@ void Executar(){
 	RecebeArquivo(caminho,&programa);
 	ExibeGeral(programa);
 	EncontraInicio(&programa);
+	printf("\n\nO inicio do programa esta no endereco: %d",programa);
 }
 
 int main(){

@@ -34,7 +34,8 @@ void InsereToken(ListaTokens**lista, char token[TFL]) {
 
 void ExibeTokens(ListaTokens *lista){
 	while(lista!=NULL){
-		printf("%s %d %c ",lista->token,lista,26);
+		printf("%s %c ",lista->token,26);
+		//printf("%s %d %c ",lista->token,lista,26);
 		lista=lista->prox;
 	}
 	printf("NULL");
