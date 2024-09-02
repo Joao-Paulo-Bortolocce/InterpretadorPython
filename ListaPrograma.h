@@ -1,4 +1,4 @@
-#include"Tokens.h"
+
 
 struct listageral{
 	struct listageral *ant,*prox;
@@ -8,7 +8,7 @@ struct listageral{
 typedef struct listageral ListaGeral;
 
 
-void Init(ListaGeral **p){
+void Init(ListaGeral**p){
 	*p=NULL;
 }
 
@@ -31,4 +31,16 @@ void InserirGeral(ListaGeral **lista,ListaTokens *tokens){
 		nova->ant=aux;
 		aux->prox=nova;
 	}
+}
+
+void ExibeGeral(ListaGeral *lista){
+	printf("NULL\n");
+	while(lista!=NULL){
+		printf("%c\n",24);
+		printf("%d %c ",lista,26);
+		ExibeTokens(lista->tokens);
+		printf("\n%c\n",25);
+		lista=lista->prox;
+	}
+	printf("NULL");
 }

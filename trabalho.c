@@ -1,7 +1,12 @@
 #include<stdio.h>
 #include<string.h>
-#define TFL 500
-#define TFC 256
+#include<malloc.h>
+
+
+
+#include"Tokens.h"
+#include"ListaPrograma.h"
+
 
 char CaractereEspecialNaoUsado(char c){
 	if(c==32 || c==',' || c==':'|| c==10)
@@ -45,7 +50,7 @@ void SeparaTokens(char linha[TFL],ListaTokens**tokens){
 	for(i=0;i<strlen(linha);i++){
 		RetornaPalavra(token,linha,&i);
 		if(strlen(token)>0){
-			printf("%s\n",token);
+			//printf("%s\n",token);
 			InsereToken(&(*tokens),token);
 		}
 	}
@@ -54,7 +59,7 @@ void SeparaTokens(char linha[TFL],ListaTokens**tokens){
 void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 	char linha[TFL];
 	ListaTokens *tokens;
-	init(&tokens);
+	InitTokens(&tokens);
 	FILE*ponteiro= fopen(caminho,"r");
 	if(ponteiro==NULL)
 		printf("Seu arquivo nao existe ou nao foi encontrado");
@@ -62,26 +67,43 @@ void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 		while(!feof(ponteiro)){
 			fgets(linha,sizeof(linha),ponteiro);  
 			if(strlen(linha)>1){ // quer dizer que não é apenas um ENTER geralmente sinalizando fim de função
-				printf("\n%s\n",linha);
+				//printf("\n%s\n",linha);
 				SeparaTokens(linha,&tokens);
 			}
 			else{
-				InsereToken(&(*tokens),"FimDef");
+				InitTokens(&tokens);
+				strcpy(linha,"FimDef");
+				InsereToken(&tokens,linha);
 				//Função FIM-DEF;
 			}
 			InserirGeral(&(*programa),tokens);
-			init(&tokens);
+			InitTokens(&tokens);
 		}
+	}
+}
+
+void EncontraInicio(ListaGeral** programa){
+	char flag=1;
+	while(flag){
+		if(stricmp((*programa)->tokens->token,"def")==0){
+			while(stricmp((*programa)->tokens->token,"FimDef")!=0)
+				*programa=(*programa)->prox;
+			*programa=(*programa)->prox;
+		}
+		else
+			flag=0;
 	}
 }
 
 void Executar(){
 	char caminho[TFC];
 	ListaGeral *programa;
-	init(&programa);
+	Init(&programa);
 	printf("Informe o caminho do arquivo .py Ex: [C://teste.py]");
 	gets(caminho);
 	RecebeArquivo(caminho,&programa);
+	ExibeGeral(programa);
+	EncontraInicio(&programa);
 }
 
 int main(){
