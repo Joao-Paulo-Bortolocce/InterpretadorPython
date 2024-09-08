@@ -89,3 +89,9 @@ void ExibePilha(Pilha *p){
 		p=p->prox;
 	}
 }
+
+Pilha* BuscaVariavel(char id[TFI],Pilha *pVariaveis){//Essa busca verifica se existe aquela variavel na pilha naquele escopo
+	while(pVariaveis!=NULL && pVariaveis->terminal!=3 && stricmp(pVariaveis->id,id))
+		pVariaveis
+
+}

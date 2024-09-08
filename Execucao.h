@@ -15,14 +15,18 @@ char VerificaPrimeiroToken(ListaTokens *cabeca){ //Descobrindo o que a linha sig
 	
 }
 
+void Atribuicao(ListaGeral programa, Pilha **pVariaveis){
+	Pilha *variavel=BuscaVariavel(programa->tokens->token,*pvariaveis);
+}
+
 void ExecutarLinha(ListaGeral *programa,Pilha **pVariaveis ){
 	while(programa!=NULL){
 		switch(VerificaPrimeiroToken(programa->tokens)){
 			case 0:
-				Condicao(0);
+				//Condicao(0);
 				break;
 			case 5:
-				Atribuicao(&(*pVariaveis));
+				Atribuicao(programa,&(*pVariaveis));
 		}
 	}
 }
