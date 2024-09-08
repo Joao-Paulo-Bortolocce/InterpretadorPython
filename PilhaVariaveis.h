@@ -10,7 +10,7 @@ union tpvalor{
 typedef union tpvalor Valor;
 
 struct pilha{
-	char id[TFI];
+	char id[TFI]; //Nome da variavel
 	Valor valor;
 	char terminal;
 	struct pilha *prox;

@@ -7,7 +7,7 @@
 #include"Tokens.h"
 #include"ListaPrograma.h"
 #include"PilhaVariaveis.h"
-//Testando o pull
+#include"Execucao.h"
 
 char CaractereEspecialNaoUsado(char c){
 	if(c==32 || c==',' || c==':'|| c==10)
@@ -107,19 +107,39 @@ void EncontraInicio(ListaGeral** programa){
 	}
 }
 
-void Executar(){
+void Preparar(ListaGeral** programa){
 	char caminho[TFC];
-	ListaGeral *programa;
 	Init(&programa);
 	printf("Informe o caminho do arquivo .py Ex: [C://teste.py]");
 	gets(caminho);
 	RecebeArquivo(caminho,&programa);
 	ExibeGeral(programa);
-	EncontraInicio(&programa);
+	EncontraInicio(&programa); //Função para encontrar a primeira linha que será executada
 	printf("\n\nO inicio do programa esta no endereco: %d",programa);
 }
 
+void Executar(ListaGeral *programa,Pilha **pVariaveis ){
+	char op;
+	while(programa!=NULL){
+		op=getch();
+		while(op!=27)
+			op=getch();
+		switch(op){
+			case 27:
+				ExecutarLinha(programa,&(*pVariaveis));
+				break;
+		}
+		programa=programa->prox;
+	}
+	
+	
+}
+
 int main(){
-	Executar();
+	ListaGeral *programa;
+	Pilha *pVariaveis; //Criando a pilha de variaveis;
+	InitPilha(pVariaveis);
+	Preparar(&programa);
+	Executar(programa,&pVariaveis);
 	return 0;
 }
