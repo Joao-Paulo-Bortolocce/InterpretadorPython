@@ -23,7 +23,7 @@ char CaractereEspecialUsado(char c){
 
 int QtdIdentacao(char linha[TFL]){
 	int i;
-	for(i=0;i<strlen(linha) && linha[i]==10;i++);
+	for(i=0;i<strlen(linha) && linha[i]==32;i++);
 	return i;
 }
 
@@ -53,7 +53,7 @@ void RetornaPalavra(char token[TFL], char linha[TFL], int *i) {
 
 void SeparaTokens(char linha[TFL],ListaTokens**tokens){
 	char token[TFL];
-	int i,identLinha;
+	int i;
 	for(i=0;i<strlen(linha);i++){
 		RetornaPalavra(token,linha,&i);
 		if(strlen(token)>0){
@@ -75,16 +75,18 @@ void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 		while(!feof(ponteiro)){
 			fgets(linha,sizeof(linha),ponteiro); 
 			identacaoAtual=QtdIdentacao(linha);
-			if(strlen(linha)>1 && identacaoAtual>=identacaoAnt){ // quer dizer que não é apenas um ENTER geralmente sinalizando fim de função
+			if(/*strlen(linha)>1 &&*/ identacaoAtual>=identacaoAnt){ // quer dizer que não é apenas um ENTER geralmente sinalizando fim de função
 				//printf("\n%s\n",linha);
 				SeparaTokens(linha,&tokens);
 			}
 			else{
 				InitTokens(&tokens);
-				strcpy(linha,"@");
-				InsereToken(&tokens,linha);
-				if(identacaoAtual<identacaoAnt)
-					SeparaTokens(linha,&tokens);
+				InsereToken(&tokens,"@");
+				if(strlen(linha)>1){
+					InserirGeral(&(*programa),tokens);
+					InitTokens(&tokens);
+					SeparaTokens(linha,&tokens);	
+				}
 				//Função FIM-DEF, FIM-IF, ...;
 			}
 			InserirGeral(&(*programa),tokens);
@@ -94,7 +96,7 @@ void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 	}
 }
 
-void EncontraInicio(ListaGeral** programa){
+void EncontraInicio(ListaGeral **programa){
 	char flag=1;
 	while(flag){
 		if(stricmp((*programa)->tokens->token,"def")==0){
@@ -109,23 +111,22 @@ void EncontraInicio(ListaGeral** programa){
 
 void Preparar(ListaGeral** programa){
 	char caminho[TFC];
-	Init(&programa);
 	printf("Informe o caminho do arquivo .py Ex: [C://teste.py]");
 	gets(caminho);
-	RecebeArquivo(caminho,&programa);
-	ExibeGeral(programa);
-	EncontraInicio(&programa); //Função para encontrar a primeira linha que será executada
-	printf("\n\nO inicio do programa esta no endereco: %d",programa);
+	RecebeArquivo(caminho,&(*programa));
+	ExibeGeral(*programa);
+	EncontraInicio(&(*programa)); //Função para encontrar a primeira linha que será executada
+	printf("\n\nO inicio do programa esta no endereco: %d",*programa);
 }
 
 void Executar(ListaGeral *programa,Pilha **pVariaveis ){
 	char op;
 	while(programa!=NULL){
 		op=getch();
-		while(op!=27)
+		while(op!=32)
 			op=getch();
 		switch(op){
-			case 27:
+			case 32:
 				ExecutarLinha(programa,&(*pVariaveis));
 				break;
 		}
@@ -137,8 +138,9 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis ){
 
 int main(){
 	ListaGeral *programa;
+	Init(&programa);
 	Pilha *pVariaveis; //Criando a pilha de variaveis;
-	InitPilha(pVariaveis);
+	InitPilha(&pVariaveis);
 	Preparar(&programa);
 	Executar(programa,&pVariaveis);
 	return 0;

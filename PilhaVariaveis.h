@@ -42,26 +42,26 @@ Pilha* NovaVariavel(char terminal,char id[TFI],char token[TFL]){
 }
 
 void Push(Pilha **p,char terminal,char id[TFI],char token[TFL]){
-	Pilha *nova=NovaVariavel(terminal,id,token),*aux;
+	Pilha *nova=NovaVariavel(terminal,id,token);
 	if(*p==NULL)
 		*p=nova;
 	else{
-		aux=*p;
-		while(aux->prox!=NULL)
-			aux=aux->prox;
-		aux->prox=nova;
+		nova->prox=*p;
+		*p=nova;
 	}
 }
 
+
 char DefineTipo(char token[TFL]){
+	double real;
 	int inteiro = atoi(token);
-	double real= atof(token);
+	real = atof(token);
 	if(inteiro == real){
 		if(inteiro != 0 || token[0]==0)
-			return 0;
-		return 2;
+			return 0; //Inteiro
+		return 2; // String
 	}
-	return 1;
+	return 1; //Float
 }
 
 void PushSemTerminal(Pilha **p,char id[TFI],char token[TFL]){
@@ -91,7 +91,10 @@ void ExibePilha(Pilha *p){
 }
 
 Pilha* BuscaVariavel(char id[TFI],Pilha *pVariaveis){//Essa busca verifica se existe aquela variavel na pilha naquele escopo
+	Pilha *aux;
 	while(pVariaveis!=NULL && pVariaveis->terminal!=3 && stricmp(pVariaveis->id,id))
-		pVariaveis
-
+		pVariaveis=pVariaveis->prox;
+	if(pVariaveis!=NULL && pVariaveis->terminal==3)
+		return NULL;
+	return pVariaveis;
 }
