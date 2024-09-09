@@ -32,7 +32,7 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 		
 	}
 	else{ // quer dizer que é um número ou uma função
-		tipo=DefineTipo(linha->token);
+		tipo=DefineTipo(linha->token); //PAREI AQUI POIS NÃO CONSEGUI DEPURAR CORRETAMENTE
 		switch(tipo){
 			case 0:
 				variavel->valor.valori= atoi(linha->token);
