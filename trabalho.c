@@ -78,18 +78,22 @@ void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 			if(/*strlen(linha)>1 &&*/ identacaoAtual>=identacaoAnt){ // quer dizer que não é apenas um ENTER geralmente sinalizando fim de função
 				//printf("\n%s\n",linha);
 				SeparaTokens(linha,&tokens);
+				InserirGeral(&(*programa),tokens);
 			}
 			else{
-				InitTokens(&tokens);
-				InsereToken(&tokens,"@");
-				if(strlen(linha)>1){
-					InserirGeral(&(*programa),tokens);
+				while(identacaoAnt-identacaoAtual >0){
 					InitTokens(&tokens);
-					SeparaTokens(linha,&tokens);	
+					InsereToken(&tokens,"@");
+					identacaoAnt-=4;
+					InserirGeral(&(*programa),tokens);
+				}
+				if(strlen(linha)>1){
+					InitTokens(&tokens);
+					SeparaTokens(linha,&tokens);
+					InserirGeral(&(*programa),tokens);
 				}
 				//Função FIM-DEF, FIM-IF, ...;
-			}
-			InserirGeral(&(*programa),tokens);
+			}		
 			InitTokens(&tokens);
 			identacaoAnt=identacaoAtual;
 		}
