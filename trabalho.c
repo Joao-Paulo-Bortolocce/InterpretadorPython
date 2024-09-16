@@ -7,6 +7,8 @@
 #include"Tokens.h"
 #include"ListaPrograma.h"
 #include"PilhaVariaveis.h"
+//#include"EquacaoGeneralizada.h"
+void Executar(ListaGeral *programa,Pilha **pVariaveis );
 #include"Execucao.h"
 
 char CaractereEspecialNaoUsado(char c){
@@ -127,14 +129,15 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis ){
 	char op;
 	while(programa!=NULL){
 		op=getch();
-		while(op!=32)
+		while(op!=13)
 			op=getch();
 		switch(op){
-			case 32:
-				ExecutarLinha(programa,&(*pVariaveis));
+			case 13:
+				ExecutarLinha(&programa,&(*pVariaveis));
 				break;
 		}
-		programa=programa->prox;
+		if(programa!=NULL)
+			programa=programa->prox;
 	}
 	
 	

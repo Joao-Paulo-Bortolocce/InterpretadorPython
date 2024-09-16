@@ -28,13 +28,13 @@ Pilha* NovaVariavel(char terminal,char id[TFI],char token[TFL]){
 	caixa->terminal=terminal;
 	caixa->prox=NULL;
 	switch(terminal){
-		case 0:
+		case '0':
 			caixa->valor.valori=atoi(token);
 			break;
-		case 1:
+		case '1':
 			caixa->valor.valorf = atof(token);
 			break;
-		case 2:
+		case '2':
 			strcpy(caixa->valor.valors,token);
 			break;
 	}
@@ -51,11 +51,38 @@ void Push(Pilha **p,char terminal,char id[TFI],char token[TFL]){
 	}
 }
 
+double ATOF(char token[TFL]){
+	double num=0,j=1.0,aux;
+	int i;
+	char flag=0;
+	for(i=0;i<strlen(token);i++){
+		if(token[i]>=48 && token[i]<=57 ||  token[i]=='.'){
+			if(token[i]=='.'){
+				flag=1;
+			}
+			else{
+				if(flag){
+					j*=10;
+				}
+				
+				num*=10;
+				num+=token[i]-48;
+			}
+			
+		}
+		else{
+			i=strlen(token);
+			num=0;
+		}
+			
+	}
+	return num/j;
+}
 
 char DefineTipo(char token[TFL]){
 	double real;
 	int inteiro = atoi(token);
-	real = atof(token);
+	real = ATOF(token);
 	if(inteiro == real){
 		if(inteiro != 0 || token[0]==0)
 			return 0; //Inteiro
