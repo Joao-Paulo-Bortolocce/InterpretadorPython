@@ -189,7 +189,7 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 			p.valori=atoi(aux->prox->token);
 			aux=aux->prox;
 			aux=aux->prox;
-			if(stricmp(aux->token,")"))
+			if(!stricmp(aux->token,")"))
 				incremento=atoi(aux->token);
 			else
 				incremento=1;
