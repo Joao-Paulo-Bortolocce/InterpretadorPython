@@ -4,11 +4,11 @@
 #include<malloc.h>
 #include<locale.h>
 
-
 #include"Tokens.h"
 #include"ListaPrograma.h"
 #include"PilhaVariaveis.h"
 #include"EquacaoGeneralizada.h"
+#include "ExecutandoIf.h"
 void Executar(ListaGeral *programa,Pilha **pVariaveis );
 #include"Execucao.h"
 
@@ -164,14 +164,14 @@ void exibirPrints(){
 	}
 }
 
-void Executar(ListaGeral *programa,Pilha **pVariaveis ){
+void Executar(ListaGeral *programa,Pilha **pVariaveis, char *flagIf){
 	char op,flag=1;
 	while(programa!=NULL){
 		op=getch();
 		switch(op){
 			case 13:
 				if(flag)
-					ExecutarLinha(&programa,&(*pVariaveis));
+					ExecutarLinha(&programa,&(*pVariaveis), flagIf);
 				break;
 			case 65: //F7
 				system("cls");
@@ -207,6 +207,7 @@ void abrirPrints(){
 }
 
 int main(){
+	char flagIf = 1;
 	setlocale(LC_NUMERIC, "C");
 	abrirPrints();
 	ListaGeral *programa;
@@ -214,6 +215,6 @@ int main(){
 	Pilha *pVariaveis; //Criando a pilha de variaveis;
 	InitPilha(&pVariaveis);
 	Preparar(&programa);
-	Executar(programa,&pVariaveis);
+	Executar(programa,&pVariaveis, &flagIf);
 	return 0;
 }
