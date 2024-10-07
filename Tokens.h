@@ -12,6 +12,12 @@ void InitTokens(ListaTokens**p){
 	*p=NULL;
 }
 
+char isEquacao(char c){
+	if(c=='+' || c=='-' || c=='/' || c=='*' || c=='%')
+		return 1;
+	return 0;
+}
+
 ListaTokens* NovoToken(char token[TFL]){
 	ListaTokens *novo=(ListaTokens*)malloc(sizeof(ListaTokens));
 	strcpy(novo->token,token);

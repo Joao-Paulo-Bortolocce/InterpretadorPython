@@ -1,6 +1,7 @@
 
 struct listageral{
 	struct listageral *ant,*prox;
+	char linha[TFL];
 	ListaTokens *tokens;
 };
 
@@ -11,16 +12,18 @@ void Init(ListaGeral**p){
 	*p=NULL;
 }
 
-ListaGeral* NovaGeral(ListaTokens *tokens){
+ListaGeral* NovaGeral(ListaTokens *tokens,char linha[TFL]){
 	ListaGeral *nova=(ListaGeral*)malloc(sizeof(ListaGeral));
 	nova->prox=NULL;
 	nova->ant=NULL;
 	nova->tokens=tokens;
+	if(stricmp(tokens->token,"@"))
+		strcpy(nova->linha,linha);
 	return nova;
 }
 
-void InserirGeral(ListaGeral **lista,ListaTokens *tokens){
-	ListaGeral *nova=NovaGeral(tokens),*aux;
+void InserirGeral(ListaGeral **lista,ListaTokens *tokens,char linha[TFL]){
+	ListaGeral *nova=NovaGeral(tokens,linha),*aux;
 	if(*lista==NULL)
 		*lista=nova;
 	else{
@@ -43,4 +46,15 @@ void ExibeGeral(ListaGeral *lista){
 		lista=lista->prox;
 	}
 	printf("NULL");
+}
+
+void exibeLinhas(ListaGeral *lista){
+	printf("\n\nLINHAS DO PROGRAMA\n");
+	while(lista->ant!=NULL)
+		lista=lista->ant;
+	while(lista!=NULL){
+		if(stricmp(lista->tokens->token,"@"))
+			printf("%s",lista->linha);
+		lista=lista->prox;
+	}
 }
