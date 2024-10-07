@@ -1,4 +1,4 @@
-char VerificaPrimeiroToken(ListaTokens *cabeca){ //Descobrindo o que a linha significa, qual a função deve ser realizada
+char VerificaPrimeiroToken(ListaTokens *cabeca){ //Descobrindo o que a linha significa, qual a funï¿½ï¿½o deve ser realizada
 	if(!stricmp(cabeca->token,"if") )
 		return 0;
 	if(!stricmp(cabeca->token,"elif"))
@@ -13,9 +13,9 @@ char VerificaPrimeiroToken(ListaTokens *cabeca){ //Descobrindo o que a linha sig
 		return 5;
 	if(!stricmp(cabeca->token,"@"))
 		return 6;
-	if(!stricmp(cabeca->prox->token,"."))//Saber se é uma função de lista
+	if(!stricmp(cabeca->prox->token,"."))//Saber se ï¿½ uma funï¿½ï¿½o de lista
 		return 7;
-	if(!stricmp(cabeca->prox->token,"="))//Saber se é uma função de lista
+	if(!stricmp(cabeca->prox->token,"="))//Saber se ï¿½ uma funï¿½ï¿½o de lista
 		return 8;
 	return 9;
 	
@@ -35,7 +35,7 @@ void recebeEquacao(ListaTokens **linha,ListaTokens **linhaAux){
 
 void posicionaCorretamente(ListaGeral **programa){
 	int cont=1,op;
-	while(cont>0){ //Repetição para saber onde colocar corretamente o programa em execução
+	while(cont>0){ //Repetiï¿½ï¿½o para saber onde colocar corretamente o programa em execuï¿½ï¿½o
 		*programa=(*programa)->prox;
 		op=VerificaPrimeiroToken((*programa)->tokens);
 		if(op<5) 
@@ -169,11 +169,11 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 		var=*pVariaveis;
 	}
 		
-	if(flag){ //RECEBI FLAG 1 QUANDO A REPETIÇÃO FOR "FOR" E 0 QUANDO FOR WHILE
+	if(flag){ //RECEBI FLAG 1 QUANDO A REPETIï¿½ï¿½O FOR "FOR" E 0 QUANDO FOR WHILE
 		while(stricmp(aux->token,"(")) //Encontra o primeiro parenteses do for, para verificar incremento, parada e inicio
 			aux=aux->prox;
 		aux=aux->prox;
-		if(!stricmp(aux->prox->token,")")){//verificar quantos critérios póssuem inicio, parada e incremento, NESTE CASO O FOR SÓ PASSA CRITÉRIO DE PARADA
+		if(!stricmp(aux->prox->token,")")){//verificar quantos critï¿½rios pï¿½ssuem inicio, parada e incremento, NESTE CASO O FOR Sï¿½ PASSA CRITï¿½RIO DE PARADA
 			p.valori=atoi(aux->token);
 			incremento=1;
 			var->valor.valori=0;
@@ -189,7 +189,7 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 				incremento=1;
 		}
 		while(var->valor.valori <p.valori){
-			Executar((*programa)->prox,&(*pVariaveis)); //Executa até encontrar o fim "@"
+			Executar((*programa)->prox,&(*pVariaveis)); //Executa atï¿½ encontrar o fim "@"
 			var->valor.valori+=incremento;
 		}
 		
@@ -199,10 +199,10 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 		aux=aux->prox;
 		strcpy(operador,aux->token);
 		aux=aux->prox;
-		p.valori = atoi(aux->token); //Só funciona com numero.
+		p.valori = atoi(aux->token); //Sï¿½ funciona com numero.
 		while(ResolveCondicao(var->valor,var->terminal,operador,p)){
 			Executar((*programa)->prox,&(*pVariaveis));
-			var->valor.valori+=1; //ESSA PARTE É SÓ PARA NÃO FICAR INFINITO, POIS ATRIBUIÇÃO AINDA NÃO EXISTE
+			var->valor.valori+=1; //ESSA PARTE ï¿½ Sï¿½ PARA Nï¿½O FICAR INFINITO, POIS ATRIBUIï¿½ï¿½O AINDA Nï¿½O EXISTE
 		}
 			
 	}
@@ -329,19 +329,19 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 
 void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 	Pilha *variavel=BuscaVariavel(programa->tokens->token,*pVariaveis),*aux;
-	ListaTokens *linha=programa->tokens->prox->prox; //Coloca o ponteiro no 3º token da linha, para saber se a variavel recebe um valor ou um retorno de função
+	ListaTokens *linha=programa->tokens->prox->prox; //Coloca o ponteiro no 3ï¿½ token da linha, para saber se a variavel recebe um valor ou um retorno de funï¿½ï¿½o
 	Valor valor;
 	char tipo,string[TFL];
 	if(variavel==NULL){
 		PushSemTerminal(&(*pVariaveis),programa->tokens->token,"0.0");
 		variavel=*pVariaveis;
 	}
-	if(linha->token[0]==34 || linha->token[0]==39){ //Quer dizer que é uma string
+	if(linha->token[0]==34 || linha->token[0]==39){ //Quer dizer que ï¿½ uma string
 		selecionaString(string,linha->token);
 		strcpy(variavel->valor.valors,string);
 		variavel->terminal=2;
 	}
-	else{ // quer dizer que é um número ou uma função ou lista ou variavel
+	else{ // quer dizer que ï¿½ um nï¿½mero ou uma funï¿½ï¿½o ou lista ou variavel
 		if(stricmp(linha->token,"("))
 			aux=BuscaVariavel(linha->token,*pVariaveis);	
 		else
@@ -356,7 +356,7 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 				variavel->terminal=1;
 				break;
 			case 2:
-				//ResolveFunçao();
+				//ResolveFunï¿½ao();
 				break;
 		}
 	}
@@ -366,6 +366,13 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis ){
 	switch(VerificaPrimeiroToken((*programa)->tokens)){
 		case 0:
+			Pilha *pilha = criarPilha();
+			if(resolveComParenteses((*progama)->linha, pilha, ))
+			{
+				Executar((*programa)->prox,&(*pVariaveis), flagIf);
+				*flagIf = 0;
+				
+			}
 			posicionaCorretamente(&(*programa));
 			//Condicao(0);
 			break;
