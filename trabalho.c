@@ -2,7 +2,7 @@
 #include<string.h>
 #include<math.h>
 #include<malloc.h>
-
+#include<locale.h>
 
 
 
@@ -208,6 +208,7 @@ void abrirPrints(){
 }
 
 int main(){
+	setlocale(LC_NUMERIC, "C");
 	abrirPrints();
 	ListaGeral *programa;
 	Init(&programa);

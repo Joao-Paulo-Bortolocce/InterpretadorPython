@@ -102,7 +102,19 @@ No* montaLista(ListaTokens* linha,Pilha *pVariaveis){
 	while(linha!=NULL){
 		if(DefineTipo(linha->token) <2){
 			valor.valor=ATOF(linha->token);
+			//sscanf(linha->token,"%f",&valor.valor);
 			InserirListaGen(&aux,'v',valor,cauda);
+			if(inicio==NULL)
+				inicio=aux;
+			else{
+				if(cauda)
+					aux=aux->cauda;
+				else{
+					PushPilhaGen(&p,aux);
+					aux=aux->cabeca;
+					cauda=1;
+				}
+			}
 		}
 		else{
 			valor.valor=0;
@@ -110,9 +122,16 @@ No* montaLista(ListaTokens* linha,Pilha *pVariaveis){
 					InserirListaGen(&aux,'v',valor,cauda);
 					if(inicio==NULL){
 						inicio=aux;
-						flag=0;
 					}
-					
+					else{
+						if(cauda)
+							aux=aux->cauda;
+						else{
+							PushPilhaGen(&p,aux);
+							aux=aux->cabeca;
+							cauda=1;
+						}
+					}
 					cauda=0;
 			}
 			else{
@@ -121,7 +140,7 @@ No* montaLista(ListaTokens* linha,Pilha *pVariaveis){
 					flag=0;
 				}
 					
-				else
+				else{
 					if(!strcmp(linha->token,"+") || !strcmp(linha->token,"-") || !strcmp(linha->token,"/") || !strcmp(linha->token,"*") || !strcmp(linha->token,"//") || !strcmp(linha->token,"**") || !strcmp(linha->token,"%")){
 						strcpy(valor.operador,linha->token);
 						InserirListaGen(&aux,'o',valor,cauda);
@@ -138,26 +157,24 @@ No* montaLista(ListaTokens* linha,Pilha *pVariaveis){
 							}
 							InserirListaGen(&aux,'v',valor,cauda);
 						}
-					}				
-				
+					}
+					if(inicio==NULL){
+						inicio=aux;
+					}
+					else{
+						if(cauda)
+							aux=aux->cauda;
+						else{
+							PushPilhaGen(&p,aux);
+							aux=aux->cabeca;
+							cauda=1;
+						}
+					}			
+				}
 			}
 		}
 		
 		linha=linha->prox;
-		if(inicio==NULL)
-			inicio=aux;
-		else{
-			if(flag){
-				if(cauda)
-					aux=aux->cauda;
-				else{
-					PushPilhaGen(&p,aux);
-					aux=aux->cabeca;
-					cauda=1;
-				}
-			}
-		}
-		flag=1;
 	}
 	return inicio;
 }

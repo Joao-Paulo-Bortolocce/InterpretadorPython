@@ -48,15 +48,22 @@ double ATOF(char token[TFL]){
 }
 
 char DefineTipo(char token[TFL]){
-	double real;
+	float real;
 	int inteiro = atoi(token);
-	real = ATOF(token);
-	if(inteiro == real){
-		if(inteiro != 0 || token[0]=='0')
-			return 0; //Inteiro
-		return 2; // String
-	}
-	return 1; //Float
+	real=ATOF(token);
+	/*char result =sscanf(token,"%f",&real);;
+	if(result==1)
+		if(real ==inteiro)
+			return 0;
+		else
+			return 1;
+	return 2;*/
+		if(inteiro == real){
+			if(inteiro != 0 || token[0]=='0')
+				return 0; //Inteiro
+			return 2; // String
+		}
+		return 1; //Float
 }
 
 void InitPilha(Pilha **p){
@@ -73,7 +80,8 @@ Pilha* NovaVariavel(char terminal,char id[TFI],char token[TFL]){
 			caixa->valor.valori=atoi(token);
 			break;
 		case '1':
-			caixa->valor.valorf = atof(token);
+			//sscanf(token,"%f",&caixa->valor.valorf);
+			caixa->valor.valorf=ATOF(token);
 			break;
 		case '2':
 			strcpy(caixa->valor.valors,token);
