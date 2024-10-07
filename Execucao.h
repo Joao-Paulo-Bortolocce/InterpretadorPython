@@ -238,7 +238,7 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 				variavel=BuscaVariavel(tokens->token,*pVariaveis);
 				
 				if(variavel!=NULL){
-					var=variavel->valor.valorf
+					var=variavel->valor.valorf;
 					if(isEquacao(tokens->prox->token[0])){
 						recebeEquacao(&tokens,&listaAux);
 						variavel->valor.valorf=ResolveExpressao(listaAux,*pVariaveis);
@@ -260,30 +260,35 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 				i+=2;
 				strcat(print,aux);
 				tl=strlen(print);
+				if(variavel!=NULL)
+					variavel->valor.valorf=var;
 			}
 		}
 		if(stricmp(auxL->token,"%")){
 			variavel=BuscaVariavel(tokens->token,*pVariaveis);
-				if(isEquacao(tokens->prox->token[0])){
-					recebeEquacao(&tokens,&listaAux);
-					variavel->valor.valorf=ResolveExpressao(listaAux,*pVariaveis);
-				}
-			if(variavel!=NULL){
-				switch(variavel->terminal){
-					case 0:
-						itoa(variavel->valor.valori, aux, 10);
-						break;
-					case 1:
+				if(variavel!=NULL){
+					var=variavel->valor.valorf;
+					if(isEquacao(tokens->prox->token[0])){
+						recebeEquacao(&tokens,&listaAux);
+						variavel->valor.valorf=ResolveExpressao(listaAux,*pVariaveis);
+					}
+					switch(variavel->terminal){
+						case 0:
+							itoa(variavel->valor.valori, aux, 10);
+							break;
+						case 1:
 							sprintf(aux, "%.2f", variavel->valor.valorf);
 							break;
-					case 2:
+						case 2:
 							strcpy(aux,variavel->valor.valors);
 							break;
+					}
 				}
-			}
-			else
-				strcpy(aux,tokens->token);
+				else
+					strcpy(aux,tokens->token);	
 			strcat(print,aux);
+			if(variavel!=NULL)
+				variavel->valor.valorf=var;
 		}
 		tl=strlen(print);
 		print[tl]='\n';
@@ -291,11 +296,12 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 	}
 	else{
 		variavel=BuscaVariavel(tokens->token,*pVariaveis);
-		if(isEquacao(tokens->prox->token[0])){
+		if(variavel!=NULL){
+			var=variavel->valor.valorf;
+			if(isEquacao(tokens->prox->token[0])){
 				recebeEquacao(&tokens,&listaAux);
 				variavel->valor.valorf=ResolveExpressao(listaAux,*pVariaveis);
 			}
-		if(variavel!=NULL){
 			switch(variavel->terminal){
 				case 0:
 					itoa(variavel->valor.valori, aux, 10);
@@ -309,11 +315,13 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 			}
 		}
 		else
-			strcpy(aux,tokens->token);
+			strcpy(aux,tokens->token);	
 		strcat(print,aux);
 		tl=strlen(print);
 		print[tl]='\n';
 		print[tl+1]='\0';
+		if(variavel!=NULL)
+				variavel->valor.valorf=var;
 	}
 	fputs(print,ponteiro);
 	fclose(ponteiro);
