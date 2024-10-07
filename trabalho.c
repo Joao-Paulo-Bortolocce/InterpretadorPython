@@ -5,7 +5,6 @@
 #include<locale.h>
 
 
-
 #include"Tokens.h"
 #include"ListaPrograma.h"
 #include"PilhaVariaveis.h"
@@ -13,11 +12,6 @@
 void Executar(ListaGeral *programa,Pilha **pVariaveis );
 #include"Execucao.h"
 
-char isEquacao(char c){
-	if(c=='+' || c=='-' || c=='/' || c=='*' || c=='%')
-		return 1;
-	return 0;
-}
 
 char isLista(char linha[TFL], int i){
 	if(linha[i]=='.' && (linha[i-1]<48 || linha[i-1]>57) && (linha[i+1]<48 || linha[i+1]>57))
@@ -108,19 +102,19 @@ void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 			if(/*strlen(linha)>1 &&*/ identacaoAtual>=identacaoAnt){ // quer dizer que não é apenas um ENTER geralmente sinalizando fim de função
 				//printf("\n%s\n",linha);
 				SeparaTokens(linha,&tokens);
-				InserirGeral(&(*programa),tokens);
+				InserirGeral(&(*programa),tokens,linha);
 			}
 			else{
 				while(identacaoAnt-identacaoAtual >0){
 					InitTokens(&tokens);
 					InsereToken(&tokens,"@");
 					identacaoAnt-=4;
-					InserirGeral(&(*programa),tokens);
+					InserirGeral(&(*programa),tokens,linha);
 				}
 				if(strlen(linha)>1){
 					InitTokens(&tokens);
 					SeparaTokens(linha,&tokens);
-					InserirGeral(&(*programa),tokens);
+					InserirGeral(&(*programa),tokens,linha);
 				}
 				//Função FIM-DEF, FIM-IF, ...;
 			}		
@@ -149,6 +143,7 @@ void Preparar(ListaGeral** programa){
 	gets(caminho);
 	RecebeArquivo(caminho,&(*programa));
 	ExibeGeral(*programa);
+	exibeLinhas(*programa);
 	EncontraInicio(&(*programa)); //Função para encontrar a primeira linha que será executada
 	printf("\n\nO inicio do programa esta no endereco: %d",*programa);
 }
@@ -179,6 +174,8 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis ){
 					ExecutarLinha(&programa,&(*pVariaveis));
 				break;
 			case 65: //F7
+				system("cls");
+				exibeLinhas(programa);
 				flag=1;
 				break;
 			case 66://F8

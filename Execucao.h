@@ -21,6 +21,18 @@ char VerificaPrimeiroToken(ListaTokens *cabeca){ //Descobrindo o que a linha sig
 	
 }
 
+void recebeEquacao(ListaTokens **linha,ListaTokens **linhaAux){
+	*linhaAux=NULL;
+	char carac=(*linha)->token[0],carac2=(*linha)->prox->token[0];
+	while((*linha)!=NULL && stricmp((*linha)->token,")") && (isEquacao(carac)!=isEquacao(carac2))){
+		InsereToken(&(*linhaAux),(*linha)->token);
+		*linha=(*linha)->prox;
+		carac=(*linha)->token[0];
+		carac2=(*linha)->prox->token[0];
+	}
+	InsereToken(&(*linhaAux),(*linha)->token);
+}
+
 void posicionaCorretamente(ListaGeral **programa){
 	int cont=1,op;
 	while(cont>0){ //Repetição para saber onde colocar corretamente o programa em execução
@@ -200,10 +212,11 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 void Print(ListaGeral *programa, Pilha **pVariaveis){
 	FILE * ponteiro= fopen("Prints.txt","a");
 	char print[TFL],string[TFL],aux[TFL];
+	float var;
 	int i=1,tl=0;
 	print[0]='\0';
 	Pilha *variavel;
-	ListaTokens *tokens=programa->tokens,*auxL;
+	ListaTokens *tokens=programa->tokens,*auxL,*listaAux;
 	tokens=tokens->prox->prox;
 	if(tokens->token[0]==34 || tokens->token[0]==39){
 		strcpy(string,tokens->token);
@@ -222,9 +235,14 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 				tokens=tokens->prox;
 				if(!stricmp(tokens->token,"("))
 					tokens=tokens->prox;
-			//	if(isEquacao(tokens->prox->token[0])) CASO FOR UMA EQUAÇÃO
 				variavel=BuscaVariavel(tokens->token,*pVariaveis);
+				
 				if(variavel!=NULL){
+					var=variavel->valor.valorf
+					if(isEquacao(tokens->prox->token[0])){
+						recebeEquacao(&tokens,&listaAux);
+						variavel->valor.valorf=ResolveExpressao(listaAux,*pVariaveis);
+					}
 					switch(variavel->terminal){
 						case 0:
 							itoa(variavel->valor.valori, aux, 10);
@@ -246,6 +264,10 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 		}
 		if(stricmp(auxL->token,"%")){
 			variavel=BuscaVariavel(tokens->token,*pVariaveis);
+				if(isEquacao(tokens->prox->token[0])){
+					recebeEquacao(&tokens,&listaAux);
+					variavel->valor.valorf=ResolveExpressao(listaAux,*pVariaveis);
+				}
 			if(variavel!=NULL){
 				switch(variavel->terminal){
 					case 0:
@@ -269,6 +291,10 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 	}
 	else{
 		variavel=BuscaVariavel(tokens->token,*pVariaveis);
+		if(isEquacao(tokens->prox->token[0])){
+				recebeEquacao(&tokens,&listaAux);
+				variavel->valor.valorf=ResolveExpressao(listaAux,*pVariaveis);
+			}
 		if(variavel!=NULL){
 			switch(variavel->terminal){
 				case 0:
@@ -309,7 +335,7 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 	}
 	else{ // quer dizer que é um número ou uma função ou lista ou variavel
 		if(stricmp(linha->token,"("))
-			aux=BuscaVariavel(linha->token,*pVariaveis);
+			aux=BuscaVariavel(linha->token,*pVariaveis);	
 		else
 			aux=BuscaVariavel(linha->prox->token,*pVariaveis);
 		if(aux!=NULL)
