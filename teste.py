@@ -1,11 +1,11 @@
-i=3
-while i < 3:
-    if a<b:
-        print('oi')
-    a=2
-    b=5
-    c=a+b
-    i+=1
-print("hello")
-print("hello")
-print("hello")
+a = 5
+b = 10
+c = 0
+msg = 'Vai corinthians'
+lista= ['joao',25,[11,2004]]
+lista.append('paulo')
+print("%d %d %d" % (a, b, c))
+print("%s %d %d" % ("7", b, a))
+print("%d %d %d" % (a, b, c))
+print("%s %d %d %d" % (msg, a, b, c))
+print(c)

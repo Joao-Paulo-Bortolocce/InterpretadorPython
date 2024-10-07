@@ -1,5 +1,4 @@
 
-
 struct listageral{
 	struct listageral *ant,*prox;
 	ListaTokens *tokens;

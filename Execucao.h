@@ -13,7 +13,11 @@ char VerificaPrimeiroToken(ListaTokens *cabeca){ //Descobrindo o que a linha sig
 		return 5;
 	if(!stricmp(cabeca->token,"@"))
 		return 6;
-	return 7;
+	if(!stricmp(cabeca->prox->token,"."))//Saber se é uma função de lista
+		return 7;
+	if(!stricmp(cabeca->prox->token,"="))//Saber se é uma função de lista
+		return 8;
+	return 9;
 	
 }
 
@@ -28,6 +32,13 @@ void posicionaCorretamente(ListaGeral **programa){
 			if(op==6)
 				cont--;
 	}
+}
+
+void selecionaString(char string[TFL],char original[TFL]){
+	int i,tl;
+	for(i=1,tl=0;i<strlen(original)-1;tl++,i++)
+		string[tl]=original[i];
+	string[tl]='\0';
 }
 
 char ResolveCondicao(Valor variavel,char terminal,char operador[],Valor parada){ //Recebe union para fazer 
@@ -135,35 +146,6 @@ char ResolveCondicao(Valor variavel,char terminal,char operador[],Valor parada){
 						}
 }
 
-void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
-	Pilha *variavel=BuscaVariavel(programa->tokens->token,*pVariaveis);
-	ListaTokens *linha=programa->tokens->prox->prox; //Coloca o ponteiro no 3º token da linha, para saber se a variavel recebe um valor ou um retorno de função
-	Valor valor;
-	char tipo;
-	if(variavel==NULL){
-		PushSemTerminal(&(*pVariaveis),programa->tokens->token,"0.0");
-		variavel=*pVariaveis;
-	}
-	if(linha->token[0]==34 || linha->token[0]==39){ //Quer dizer que é uma string
-		
-	}
-	else{ // quer dizer que é um número ou uma função
-		tipo=DefineTipo(linha->token); //PAREI AQUI POIS NÃO CONSEGUI DEPURAR CORRETAMENTE
-		switch(tipo){
-			case 0:
-				variavel->valor.valori= atoi(linha->token);
-				break;
-			case 1:
-				variavel->valor.valorf= ATOF(linha->token);
-				break;
-			case 2:
-				//ResolveFunçao();
-				break;
-		}
-	}
-	
-}
-
 void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 	int incremento;
 	Valor p;
@@ -189,7 +171,7 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 			p.valori=atoi(aux->prox->token);
 			aux=aux->prox;
 			aux=aux->prox;
-			if(!stricmp(aux->token,")"))
+			if(stricmp(aux->token,")"))
 				incremento=atoi(aux->token);
 			else
 				incremento=1;
@@ -215,9 +197,139 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 	posicionaCorretamente(&(*programa));
 }
 
+void Print(ListaGeral *programa, Pilha **pVariaveis){
+	FILE * ponteiro= fopen("Prints.txt","a");
+	char print[TFL],string[TFL],aux[TFL];
+	int i=1,tl=0;
+	print[0]='\0';
+	Pilha *variavel;
+	ListaTokens *tokens=programa->tokens,*auxL;
+	tokens=tokens->prox->prox;
+	if(tokens->token[0]==34 || tokens->token[0]==39){
+		strcpy(string,tokens->token);
+		tokens=tokens->prox;
+		auxL=tokens;
+		while(i<strlen(string)-1){
+			while(i<strlen(string)-1 && string[i]!='%'){
+				print[tl]=string[i];
+				i++;tl++;
+			}
+				
+			print[tl]='\0';
+			if(tl>0)
+				tl++;
+			if(i<strlen(string)-1){
+				tokens=tokens->prox;
+				if(!stricmp(tokens->token,"("))
+					tokens=tokens->prox;
+			//	if(isEquacao(tokens->prox->token[0])) CASO FOR UMA EQUAÇÃO
+				variavel=BuscaVariavel(tokens->token,*pVariaveis);
+				if(variavel!=NULL){
+					switch(variavel->terminal){
+						case 0:
+							itoa(variavel->valor.valori, aux, 10);
+							break;
+						case 1:
+							sprintf(aux, "%.2f", variavel->valor.valorf);
+							break;
+						case 2:
+							strcpy(aux,variavel->valor.valors);
+							break;
+					}
+				}
+				else
+					strcpy(aux,tokens->token);	
+				i+=2;
+				strcat(print,aux);
+				tl=strlen(print);
+			}
+		}
+		if(stricmp(auxL->token,"%")){
+			variavel=BuscaVariavel(tokens->token,*pVariaveis);
+			if(variavel!=NULL){
+				switch(variavel->terminal){
+					case 0:
+						itoa(variavel->valor.valori, aux, 10);
+						break;
+					case 1:
+							sprintf(aux, "%.2f", variavel->valor.valorf);
+							break;
+					case 2:
+							strcpy(aux,variavel->valor.valors);
+							break;
+				}
+			}
+			else
+				strcpy(aux,tokens->token);
+			strcat(print,aux);
+		}
+		tl=strlen(print);
+		print[tl]='\n';
+		print[tl+1]='\0';
+	}
+	else{
+		variavel=BuscaVariavel(tokens->token,*pVariaveis);
+		if(variavel!=NULL){
+			switch(variavel->terminal){
+				case 0:
+					itoa(variavel->valor.valori, aux, 10);
+					break;
+				case 1:
+					sprintf(aux, "%.2f", variavel->valor.valorf);
+					break;
+				case 2:
+					strcpy(aux,variavel->valor.valors);
+					break;
+			}
+		}
+		else
+			strcpy(aux,tokens->token);
+		strcat(print,aux);
+		tl=strlen(print);
+		print[tl]='\n';
+		print[tl+1]='\0';
+	}
+	fputs(print,ponteiro);
+	fclose(ponteiro);
+}
+
+void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
+	Pilha *variavel=BuscaVariavel(programa->tokens->token,*pVariaveis),*aux;
+	ListaTokens *linha=programa->tokens->prox->prox; //Coloca o ponteiro no 3º token da linha, para saber se a variavel recebe um valor ou um retorno de função
+	Valor valor;
+	char tipo,string[TFL];
+	if(variavel==NULL){
+		PushSemTerminal(&(*pVariaveis),programa->tokens->token,"0.0");
+		variavel=*pVariaveis;
+	}
+	if(linha->token[0]==34 || linha->token[0]==39){ //Quer dizer que é uma string
+		selecionaString(string,linha->token);
+		strcpy(variavel->valor.valors,string);
+		variavel->terminal=2;
+	}
+	else{ // quer dizer que é um número ou uma função ou lista ou variavel
+		aux=BuscaVariavel(linha->token,*pVariaveis);
+		if(aux!=NULL)
+			tipo=aux->terminal;
+		else
+			tipo=DefineTipo(linha->token);
+		switch(tipo){
+			case 0: case 1:
+				variavel->valor.valorf= ResolveExpressao(linha,*pVariaveis);
+				variavel->terminal=1;
+				break;
+			case 2:
+				//ResolveFunçao();
+				break;
+		}
+	}
+	
+}
+
 void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis ){
 	switch(VerificaPrimeiroToken((*programa)->tokens)){
 		case 0:
+			posicionaCorretamente(&(*programa));
 			//Condicao(0);
 			break;
 		case 3:
@@ -227,10 +339,13 @@ void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis ){
 			Repeticao(&(*programa),&(*pVariaveis),1);
 			break;
 		case 5:
-			//Atribuicao(programa,&(*pVariaveis));
+			Print(*programa,&(*pVariaveis));
 			break;
 		case 6:
 			*programa=NULL;
+			break;
+		case 8:
+			Atribuicao(*programa,&(*pVariaveis));
 			break;
 	}
 }

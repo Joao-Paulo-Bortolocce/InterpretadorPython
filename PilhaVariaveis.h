@@ -18,38 +18,6 @@ struct pilha{
 
 typedef struct pilha Pilha;
 
-void InitPilha(Pilha **p){
-	*p=NULL;
-}
-
-Pilha* NovaVariavel(char terminal,char id[TFI],char token[TFL]){
-	Pilha *caixa=(Pilha*)malloc(sizeof(Pilha));
-	strcpy(caixa->id,id);
-	caixa->terminal=terminal;
-	caixa->prox=NULL;
-	switch(terminal){
-		case '0':
-			caixa->valor.valori=atoi(token);
-			break;
-		case '1':
-			caixa->valor.valorf = atof(token);
-			break;
-		case '2':
-			strcpy(caixa->valor.valors,token);
-			break;
-	}
-	return caixa;
-}
-
-void Push(Pilha **p,char terminal,char id[TFI],char token[TFL]){
-	Pilha *nova=NovaVariavel(terminal,id,token);
-	if(*p==NULL)
-		*p=nova;
-	else{
-		nova->prox=*p;
-		*p=nova;
-	}
-}
 
 double ATOF(char token[TFL]){
 	double num=0,j=1.0,aux;
@@ -84,12 +52,46 @@ char DefineTipo(char token[TFL]){
 	int inteiro = atoi(token);
 	real = ATOF(token);
 	if(inteiro == real){
-		if(inteiro != 0 || token[0]==0)
+		if(inteiro != 0 || token[0]=='0')
 			return 0; //Inteiro
 		return 2; // String
 	}
 	return 1; //Float
 }
+
+void InitPilha(Pilha **p){
+	*p=NULL;
+}
+
+Pilha* NovaVariavel(char terminal,char id[TFI],char token[TFL]){
+	Pilha *caixa=(Pilha*)malloc(sizeof(Pilha));
+	strcpy(caixa->id,id);
+	caixa->terminal=terminal;
+	caixa->prox=NULL;
+	switch(terminal){
+		case '0':
+			caixa->valor.valori=atoi(token);
+			break;
+		case '1':
+			caixa->valor.valorf = atof(token);
+			break;
+		case '2':
+			strcpy(caixa->valor.valors,token);
+			break;
+	}
+	return caixa;
+}
+
+void Push(Pilha **p,char terminal,char id[TFI],char token[TFL]){
+	Pilha *nova=NovaVariavel(terminal,id,token);
+	if(*p==NULL)
+		*p=nova;
+	else{
+		nova->prox=*p;
+		*p=nova;
+	}
+}
+
 
 void PushSemTerminal(Pilha **p,char id[TFI],char token[TFL]){
 	char terminal;
@@ -97,8 +99,23 @@ void PushSemTerminal(Pilha **p,char id[TFI],char token[TFL]){
 	Push(&(*p),terminal,id,token);
 }
 
+
 void ExibePilha(Pilha *p){
-	while(p!=0){
+	system("cls");
+	int i;
+	gotoxy(0,0);
+	printf("%c",201);
+	for(i=1;i<63;i++){
+		gotoxy(i,0);
+		printf("%c",205);
+		if(i==21 || i==42){
+			gotoxy(i,0);
+			printf("%c",203);
+		}
+	}
+	gotoxy(i,0);
+		printf("%c",187);
+	while(p!= NULL){
 		switch(p->terminal){
 			case 0:
 				printf("%s\t%d\tNULL\n",p->id,p->valor.valori);
