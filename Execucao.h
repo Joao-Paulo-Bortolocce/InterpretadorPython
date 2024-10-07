@@ -159,13 +159,13 @@ char ResolveCondicao(Valor variavel,char terminal,char operador[],Valor parada){
 }
 
 void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
-	int incremento;
+	int incremento,valori;
 	Valor p;
 	ListaTokens *aux=(*programa)->tokens;
 	char operador[3];
 	Pilha *var = BuscaVariavel(aux->prox->token,*pVariaveis);
 	if(var==NULL){
-		Push(&(*pVariaveis),0,aux->prox->token,0);
+		Push(&(*pVariaveis),1,aux->prox->token,0);
 		var=*pVariaveis;
 	}
 		
@@ -176,10 +176,10 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 		if(!stricmp(aux->prox->token,")")){//verificar quantos crit�rios p�ssuem inicio, parada e incremento, NESTE CASO O FOR S� PASSA CRIT�RIO DE PARADA
 			p.valori=atoi(aux->token);
 			incremento=1;
-			var->valor.valori=0;
+			var->valor.valorf=0;
 		}
 		else{
-			var->valor.valori=atoi(aux->token);
+			var->valor.valorf=atoi(aux->token);
 			p.valori=atoi(aux->prox->token);
 			aux=aux->prox;
 			aux=aux->prox;
@@ -188,9 +188,11 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 			else
 				incremento=1;
 		}
-		while(var->valor.valori <p.valori){
+		valori=var->valor.valorf;
+		while(var->valor.valorf <p.valori){
 			Executar((*programa)->prox,&(*pVariaveis)); //Executa at� encontrar o fim "@"
-			var->valor.valori+=incremento;
+			valori+=incremento;
+			var->valor.valorf=valori;
 		}
 		
 	}
@@ -363,10 +365,10 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 	
 }
 
-void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis ){
+void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis, char *flagIf ){
 	switch(VerificaPrimeiroToken((*programa)->tokens)){
 		case 0:
-			Pilha *pilha = criarPilha();
+			/*Pilha *pilha = criarPilha();
 			if(resolveComParenteses((*progama)->linha, pilha, ))
 			{
 				Executar((*programa)->prox,&(*pVariaveis), flagIf);
@@ -381,7 +383,8 @@ void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis ){
 			{
 				Executar(());
 				*flagIf = 0;
-			}
+			}*/
+			break;
 		case 3:
 			Repeticao(&(*programa),&(*pVariaveis),0);
 			break;

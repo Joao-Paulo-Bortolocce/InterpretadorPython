@@ -8,8 +8,8 @@
 #include"ListaPrograma.h"
 #include"PilhaVariaveis.h"
 #include"EquacaoGeneralizada.h"
-#include "ExecutandoIf.h"
-void Executar(ListaGeral *programa,Pilha **pVariaveis );
+//#include "ExecutandoIf.h"
+void Executar(ListaGeral *programa,Pilha **pVariaveis);
 #include"Execucao.h"
 
 
@@ -143,7 +143,6 @@ void Preparar(ListaGeral** programa){
 	gets(caminho);
 	RecebeArquivo(caminho,&(*programa));
 	ExibeGeral(*programa);
-	exibeLinhas(*programa);
 	EncontraInicio(&(*programa)); //Função para encontrar a primeira linha que será executada
 	printf("\n\nO inicio do programa esta no endereco: %d",*programa);
 }
@@ -164,18 +163,19 @@ void exibirPrints(){
 	}
 }
 
-void Executar(ListaGeral *programa,Pilha **pVariaveis, char *flagIf){
-	char op,flag=1;
+void Executar(ListaGeral *programa,Pilha **pVariaveis){
+	char op,flag=1,flagIf=1;
+	MarcaLinha(programa,1,1);
 	while(programa!=NULL){
 		op=getch();
 		switch(op){
 			case 13:
 				if(flag)
-					ExecutarLinha(&programa,&(*pVariaveis), flagIf);
+					ExecutarLinha(&programa,&(*pVariaveis), &flagIf);
 				break;
 			case 65: //F7
 				system("cls");
-				exibeLinhas(programa);
+				MarcaLinha(programa,1,1);
 				flag=1;
 				break;
 			case 66://F8
@@ -192,8 +192,8 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis, char *flagIf){
 			
 		}
 		if(programa!=NULL && op==13){
-			MarcaLinha(programa);
 			programa=programa->prox;
+			MarcaLinha(programa,1,1);
 		}
 	}
 	
@@ -207,7 +207,6 @@ void abrirPrints(){
 }
 
 int main(){
-	char flagIf = 1;
 	setlocale(LC_NUMERIC, "C");
 	abrirPrints();
 	ListaGeral *programa;
@@ -215,6 +214,6 @@ int main(){
 	Pilha *pVariaveis; //Criando a pilha de variaveis;
 	InitPilha(&pVariaveis);
 	Preparar(&programa);
-	Executar(programa,&pVariaveis, &flagIf);
+	Executar(programa,&pVariaveis);
 	return 0;
 }

@@ -5,7 +5,7 @@ union Variavel {
     char string[500]; // Para lidar com strings
 };
 
-char testaCondicao(char terminal, char opera[], Variavel v1, Variavel v2) {
+char testaCondicao(char terminal, char opera[], union Variavel v1,union Variavel v2) {
 	
 	
 	if(strcmp(opera, "==") == 0) {
