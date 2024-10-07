@@ -1,5 +1,4 @@
 
-
 struct listageral{
 	struct listageral *ant,*prox;
 	ListaTokens *tokens;
@@ -37,6 +36,7 @@ void ExibeGeral(ListaGeral *lista){
 	printf("NULL\n");
 	while(lista!=NULL){
 		printf("%c\n",24);
+		//printf(" %c ",26);
 		printf("%d %c ",lista,26);
 		ExibeTokens(lista->tokens);
 		printf("\n%c\n",25);
