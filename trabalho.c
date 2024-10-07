@@ -191,8 +191,10 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis ){
 				break;
 			
 		}
-		if(programa!=NULL && op==13)
+		if(programa!=NULL && op==13){
+			MarcaLinha(programa);
 			programa=programa->prox;
+		}
 	}
 	
 	
