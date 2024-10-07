@@ -189,7 +189,6 @@ int testaIf(char *string, Pilha *p) {
             }
             opera[pos] = '\0';
             i++; // Avança para o próximo caractere
-            printf("OPERADOR: %s\n", opera);
 
             // A segunda variável
             while (string[i] == ' ') i++; // Ignora espaços em branco
