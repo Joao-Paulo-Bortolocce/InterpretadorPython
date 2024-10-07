@@ -1,3 +1,5 @@
+nome="Joao paulo"
+sobrenome="Bortolocce"
 a = 1.5
 b = 3
 c = 2.8

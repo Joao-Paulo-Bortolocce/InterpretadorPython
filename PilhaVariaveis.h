@@ -110,22 +110,23 @@ void PushSemTerminal(Pilha **p,char id[TFI],char token[TFL]){
 
 void ExibePilha(Pilha *p){
 	system("cls");
-	int i;
-	gotoxy(0,0);
+	printf("\t\t\tPILHA DE VARIAVEIS\n");
+	int i,j;
+	gotoxy(1,2);
 	printf("%c",201);
-	for(i=1;i<63;i++){
-		gotoxy(i,0);
+	for(i=2;i<63;i++){
+		gotoxy(i,2);
 		printf("%c",205);
 		if(i==21 || i==42){
-			gotoxy(i,0);
+			gotoxy(i,2);
 			printf("%c",203);
 		}
 	}
-	gotoxy(i,0);
+	gotoxy(i,2);
 		printf("%c",187);
-	i=1;
+	i=3;
 	while(p!= NULL){
-		gotoxy(0,i);
+		gotoxy(1,i);
 		printf("%c",186);
 		gotoxy(21,i);
 		printf("%c",186);
@@ -134,7 +135,7 @@ void ExibePilha(Pilha *p){
 		gotoxy(63,i);
 		printf("%c",186);
 		gotoxy(10-(int)strlen(p->id)/2,i);
-		if(p->terminal==3)
+		if(p->terminal!=3)
 			printf("%s",p->id);
 		else
 			printf("-----");
@@ -161,9 +162,39 @@ void ExibePilha(Pilha *p){
 				printf("%d",p->valor.ponteiro);
 				break;
 		}
+		
 		i++;
 		p=p->prox;
+		if(p!=NULL){
+			gotoxy(1,i);
+			printf("%c",204);
+			j=i;
+			for(i=2;i<63;i++){
+				gotoxy(i,j);
+				printf("%c",205);
+				if(i==21 || i==42){
+					gotoxy(i,j);
+					printf("%c",206);
+				}
+			}
+			gotoxy(i,j);
+				printf("%c",185);
+			i=j+1;
+		}	
 	}
+	gotoxy(1,i);
+	printf("%c",200);
+	j=i;
+	for(i=2;i<63;i++){
+		gotoxy(i,j);
+		printf("%c",205);
+		if(i==21 || i==42){
+			gotoxy(i,j);
+			printf("%c",202);
+		}
+	}
+	gotoxy(i,j);
+		printf("%c",188);
 }
 
 Pilha* BuscaVariavel(char id[TFI],Pilha *pVariaveis){//Essa busca verifica se existe aquela variavel na pilha naquele escopo
