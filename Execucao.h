@@ -374,8 +374,14 @@ void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis ){
 				
 			}
 			posicionaCorretamente(&(*programa));
-			//Condicao(0);
 			break;
+		case 1: 
+			Pilha *pilha = criarPilha();
+			if(resolveComParenteses() && (*flagIf))
+			{
+				Executar(());
+				*flagIf = 0;
+			}
 		case 3:
 			Repeticao(&(*programa),&(*pVariaveis),0);
 			break;
