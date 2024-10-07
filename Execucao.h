@@ -308,7 +308,10 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 		variavel->terminal=2;
 	}
 	else{ // quer dizer que é um número ou uma função ou lista ou variavel
-		aux=BuscaVariavel(linha->token,*pVariaveis);
+		if(stricmp(linha->token,"("))
+			aux=BuscaVariavel(linha->token,*pVariaveis);
+		else
+			aux=BuscaVariavel(linha->prox->token,*pVariaveis);
 		if(aux!=NULL)
 			tipo=aux->terminal;
 		else

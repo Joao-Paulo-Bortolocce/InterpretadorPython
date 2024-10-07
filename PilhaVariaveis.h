@@ -115,21 +115,45 @@ void ExibePilha(Pilha *p){
 	}
 	gotoxy(i,0);
 		printf("%c",187);
+	i=1;
 	while(p!= NULL){
+		gotoxy(0,i);
+		printf("%c",186);
+		gotoxy(21,i);
+		printf("%c",186);
+		gotoxy(42,i);
+		printf("%c",186);
+		gotoxy(63,i);
+		printf("%c",186);
+		gotoxy(10-(int)strlen(p->id)/2,i);
+		if(p->terminal==3)
+			printf("%s",p->id);
+		else
+			printf("-----");
+		gotoxy(31-(int)strlen(p->id)/2,i);
 		switch(p->terminal){
 			case 0:
-				printf("%s\t%d\tNULL\n",p->id,p->valor.valori);
+				printf("%d",p->valor.valori);
+				gotoxy(52-(int)strlen(p->id)/2,i);
+				printf("NULL");
 				break;
 			case 1:
-				printf("%s\t%f\tNULL\n",p->id,p->valor.valorf);
+				printf("%f",p->valor.valorf);
+				gotoxy(52-(int)strlen(p->id)/2,i);
+				printf("NULL");
 				break;
 			case 2:
-				printf("%s\t%s\tNULL\n",p->id,p->valor.valors);
+				printf("%s",p->valor.valors);
+				gotoxy(52-(int)strlen(p->id)/2,i);
+				printf("NULL");
 				break;
 			case 3:
-				printf("%s\t-\t%d\n",p->id,p->valor.ponteiro);
+				printf("",p->valor.valori);
+				gotoxy(52-(int)strlen(p->id)/2,i);
+				printf("%d",p->valor.ponteiro);
 				break;
 		}
+		i++;
 		p=p->prox;
 	}
 }

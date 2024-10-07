@@ -95,7 +95,7 @@ void InserirListaGen(No **lista,char terminal,TpConteudo Conteudo,char isCauda){
 No* montaLista(ListaTokens* linha,Pilha *pVariaveis){
 	No *inicio=NULL,*aux=inicio;
 	PilhaGen *p;
-	char cauda=1;
+	char cauda=1,flag=0;
 	Pilha *var;
 	InitPilhaGen(&p);
 	TpConteudo valor;
@@ -108,12 +108,19 @@ No* montaLista(ListaTokens* linha,Pilha *pVariaveis){
 			valor.valor=0;
 			if(!stricmp(linha->token,"(")){
 					InserirListaGen(&aux,'v',valor,cauda);
-					aux=aux->cauda;
+					if(inicio==NULL){
+						inicio=aux;
+						flag=0;
+					}
+					
 					cauda=0;
 			}
 			else{
-				if(!stricmp(linha->token,")"))
+				if(!stricmp(linha->token,")")){
 					PopPilhaGen(&p,&aux);
+					flag=0;
+				}
+					
 				else
 					if(!strcmp(linha->token,"+") || !strcmp(linha->token,"-") || !strcmp(linha->token,"/") || !strcmp(linha->token,"*") || !strcmp(linha->token,"//") || !strcmp(linha->token,"**") || !strcmp(linha->token,"%")){
 						strcpy(valor.operador,linha->token);
@@ -135,19 +142,22 @@ No* montaLista(ListaTokens* linha,Pilha *pVariaveis){
 				
 			}
 		}
-		if(!cauda)
-			cauda=1;
+		
 		linha=linha->prox;
 		if(inicio==NULL)
 			inicio=aux;
 		else{
-			if(cauda)
-				aux=aux->cauda;
-			else{
-				PushPilhaGen(&p,aux);
-				aux=aux->cabeca;
+			if(flag){
+				if(cauda)
+					aux=aux->cauda;
+				else{
+					PushPilhaGen(&p,aux);
+					aux=aux->cabeca;
+					cauda=1;
+				}
 			}
 		}
+		flag=1;
 	}
 	return inicio;
 }
@@ -206,9 +216,10 @@ char prioridade(char operador[3]){
 }
 
 float SolucionaExpressao(No *expressao){
-	char terminal;
+	char terminal,flag=1;
 	TpConteudo valor;
 	TpPilhaRes *p=NULL,*aux=NULL;
+	int i;
 	while(expressao !=NULL){
 		if(expressao->cabeca !=NULL)
 			expressao->conteudo.valor=SolucionaExpressao(expressao->cabeca);
@@ -218,12 +229,21 @@ float SolucionaExpressao(No *expressao){
 				PushSolucao(&aux,valor,terminal);
 				PopSolucao(&p,&valor,&terminal);
 			}
-			PushSolucao(&aux,valor,terminal);
+			PushSolucao(&p,valor,terminal);
 			if(!isEmptySolucao(p) && prioridade(expressao->conteudo.operador)>prioridade(valor.operador)){ // NÃO PODE COLOCAR UM * EM CIMA DE UM +
-				while(!isEmptySolucao(p)){
+				while(!isEmptySolucao(aux)){
+					PopSolucao(&aux,&valor,&terminal);
+					PushSolucao(&p,valor,terminal);
+					
+				}
+				
+				PushSolucao(&p,expressao->conteudo,expressao->terminal);
+				expressao=expressao->cauda;
+				PushSolucao(&p,expressao->conteudo,expressao->terminal);
+				flag=0;
+				for(i=0;i<3;i++){
 					PopSolucao(&p,&valor,&terminal);
 					PushSolucao(&aux,valor,terminal);
-					
 				}
 				valor.valor= calcula(&aux);
 				PushSolucao(&p,valor,terminal);
@@ -234,8 +254,10 @@ float SolucionaExpressao(No *expressao){
 					PushSolucao(&p,valor,terminal);	
 				}
 		}
-		PushSolucao(&p,expressao->conteudo,expressao->terminal);
+		if(flag)
+			PushSolucao(&p,expressao->conteudo,expressao->terminal);
 		expressao=expressao->cauda;
+		flag=1;
 	}
 	while(!isEmptySolucao(p)){
 		PopSolucao(&p,&valor,&terminal);
