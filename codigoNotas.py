@@ -7,7 +7,5 @@ print("Maria - Media 3: 7")
 media3 = 7
 print("Ana - Media 4: 4")
 media4 = 4
-
 media = (media1 + media2 + media3 + media4)/4
-
 print("A media da turma foi de: " + media)

@@ -7,3 +7,4 @@ for i in range:
         print("Entrei no else")
     j = 10 * 2 + (9 + 1 + 2 + 3 + 4 + 5)/10
     print(j)
+print("Programa encerrado com sucesso")

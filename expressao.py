@@ -3,3 +3,4 @@ if a == 72:
     print("a = 72")
 else:
     print("a = %d" % a)
+print("Programa encerrado com sucesso")
