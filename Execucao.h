@@ -159,21 +159,26 @@ char ResolveCondicao(Valor variavel,char terminal,char operador[],Valor parada){
 }
 
 void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
+<<<<<<< HEAD
 	int incremento,valori;
+=======
+	int incremento,valori,i,j;
+>>>>>>> c4feb3ff57b87d98a6708121e27215545bd4f731
 	Valor p;
+	PilhaIf *pilha;
 	ListaTokens *aux=(*programa)->tokens;
-	char operador[3];
+	char operador[3],string[TFL];
 	Pilha *var = BuscaVariavel(aux->prox->token,*pVariaveis);
 	if(var==NULL){
 		Push(&(*pVariaveis),1,aux->prox->token,0);
 		var=*pVariaveis;
 	}
 		
-	if(flag){ //RECEBI FLAG 1 QUANDO A REPETI��O FOR "FOR" E 0 QUANDO FOR WHILE
+	if(flag){ //RECEBI FLAG 1 QUANDO A REPETIï¿½ï¿½O FOR "FOR" E 0 QUANDO FOR WHILE
 		while(stricmp(aux->token,"(")) //Encontra o primeiro parenteses do for, para verificar incremento, parada e inicio
 			aux=aux->prox;
 		aux=aux->prox;
-		if(!stricmp(aux->prox->token,")")){//verificar quantos crit�rios p�ssuem inicio, parada e incremento, NESTE CASO O FOR S� PASSA CRIT�RIO DE PARADA
+		if(!stricmp(aux->prox->token,")")){//verificar quantos critï¿½rios pï¿½ssuem inicio, parada e incremento, NESTE CASO O FOR Sï¿½ PASSA CRITï¿½RIO DE PARADA
 			p.valori=atoi(aux->token);
 			incremento=1;
 			var->valor.valorf=0;
@@ -190,22 +195,36 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 		}
 		valori=var->valor.valorf;
 		while(var->valor.valorf <p.valori){
+<<<<<<< HEAD
 			Executar((*programa)->prox,&(*pVariaveis)); //Executa at� encontrar o fim "@"
+=======
+			Executar((*programa)->prox,&(*pVariaveis)); //Executa atï¿½ encontrar o fim "@"
+>>>>>>> c4feb3ff57b87d98a6708121e27215545bd4f731
 			valori+=incremento;
 			var->valor.valorf=valori;
 		}
 		
 	}
 	else{
-		aux=aux->prox;
+		pilha = criarPilha();
+		for(i = 6, j = 0; i < strlen((*programa) -> linha); i++, j++)
+			string[j] = (*programa) -> linha[i];
+		string[j]='\0';
+		while(resolveComParenteses(string, pilha, *pVariaveis))
+		{
+			Executar((*programa)->prox,&(*pVariaveis));
+		}
+		destruirPilha(pilha);
+		
+	/*	aux=aux->prox;
 		aux=aux->prox;
 		strcpy(operador,aux->token);
 		aux=aux->prox;
-		p.valori = atoi(aux->token); //S� funciona com numero.
+		p.valori = atoi(aux->token); //Sï¿½ funciona com numero.
 		while(ResolveCondicao(var->valor,var->terminal,operador,p)){
 			Executar((*programa)->prox,&(*pVariaveis));
-			var->valor.valori+=1; //ESSA PARTE � S� PARA N�O FICAR INFINITO, POIS ATRIBUI��O AINDA N�O EXISTE
-		}
+			var->valor.valori+=1; //ESSA PARTE ï¿½ Sï¿½ PARA Nï¿½O FICAR INFINITO, POIS ATRIBUIï¿½ï¿½O AINDA Nï¿½O EXISTE
+		}*/
 			
 	}
 	posicionaCorretamente(&(*programa));
@@ -266,7 +285,7 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 					variavel->valor.valorf=var;
 			}
 		}
-		if(stricmp(auxL->token,"%")){
+		if(stricmp(auxL->token,"%") && stricmp(auxL->token,")")){
 			variavel=BuscaVariavel(tokens->token,*pVariaveis);
 				if(variavel!=NULL){
 					var=variavel->valor.valorf;
@@ -296,7 +315,7 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 		print[tl]='\n';
 		print[tl+1]='\0';
 	}
-	else{
+	else if(stricmp(auxL->token,")")){
 		variavel=BuscaVariavel(tokens->token,*pVariaveis);
 		if(variavel!=NULL){
 			var=variavel->valor.valorf;
@@ -365,25 +384,58 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 	
 }
 
+<<<<<<< HEAD
 void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis, char *flagIf ){
 	switch(VerificaPrimeiroToken((*programa)->tokens)){
 		case 0:
 			/*Pilha *pilha = criarPilha();
 			if(resolveComParenteses((*progama)->linha, pilha, ))
+=======
+void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis, char *flagIf){
+	PilhaIf *pilha;
+	int i, j;
+	char string[50];
+	switch(VerificaPrimeiroToken((*programa)->tokens)){
+		case 0: //if
+			pilha = criarPilha();
+			for(i = 3, j = 0; i < strlen((*programa) -> linha); i++, j++)
+				string[j] = (*programa) -> linha[i];
+			string[j]='\0';
+			if(resolveComParenteses(string, pilha, *pVariaveis))
+>>>>>>> c4feb3ff57b87d98a6708121e27215545bd4f731
 			{
-				Executar((*programa)->prox,&(*pVariaveis), flagIf);
+				Executar((*programa)->prox,&(*pVariaveis));
 				*flagIf = 0;
 				
 			}
+			destruirPilha(pilha);
 			posicionaCorretamente(&(*programa));
 			break;
-		case 1: 
-			Pilha *pilha = criarPilha();
-			if(resolveComParenteses() && (*flagIf))
+		case 1: //elif
+			pilha = criarPilha();
+			for(i = 5, j = 0; i < strlen((*programa) -> linha); i++, j++)
+				string[j] = (*programa) -> linha[i];
+			if(resolveComParenteses(string, pilha, *pVariaveis) && *flagIf)
 			{
-				Executar(());
+				Executar((*programa)->prox,&(*pVariaveis));
 				*flagIf = 0;
+<<<<<<< HEAD
 			}*/
+=======
+			}
+			destruirPilha(pilha);
+			posicionaCorretamente(&(*programa));
+			break;
+		case 2: //else
+			pilha = criarPilha();
+			if(*flagIf)
+			{
+				Executar((*programa) -> prox, &(*pVariaveis));
+				*flagIf = 0;
+			}
+			destruirPilha(pilha);
+			posicionaCorretamente(&(*programa));
+>>>>>>> c4feb3ff57b87d98a6708121e27215545bd4f731
 			break;
 		case 3:
 			Repeticao(&(*programa),&(*pVariaveis),0);

@@ -5,6 +5,7 @@ union tpvalor{
 	double valorf;//1
 	char valors[20];//2
 	ListaGeral *ponteiro;//3
+	//ListaGen *pListaGen //4
 };
 
 typedef union tpvalor Valor;
@@ -108,94 +109,104 @@ void PushSemTerminal(Pilha **p,char id[TFI],char token[TFL]){
 }
 
 
-void ExibePilha(Pilha *p){
-	system("cls");
-	printf("\t\t\tPILHA DE VARIAVEIS\n");
-	int i,j;
-	gotoxy(1,2);
-	printf("%c",201);
-	for(i=2;i<63;i++){
-		gotoxy(i,2);
-		printf("%c",205);
-		if(i==21 || i==42){
-			gotoxy(i,2);
-			printf("%c",203);
-		}
-	}
-	gotoxy(i,2);
-		printf("%c",187);
-	i=3;
-	while(p!= NULL){
-		gotoxy(1,i);
-		printf("%c",186);
-		gotoxy(21,i);
-		printf("%c",186);
-		gotoxy(42,i);
-		printf("%c",186);
-		gotoxy(63,i);
-		printf("%c",186);
-		gotoxy(10-(int)strlen(p->id)/2,i);
-		if(p->terminal!=3)
-			printf("%s",p->id);
-		else
-			printf("-----");
-		gotoxy(31-(int)strlen(p->id)/2,i);
-		switch(p->terminal){
-			case 0:
-				printf("%d",p->valor.valori);
-				gotoxy(52-(int)strlen(p->id)/2,i);
-				printf("NULL");
-				break;
-			case 1:
-				printf("%f",p->valor.valorf);
-				gotoxy(52-(int)strlen(p->id)/2,i);
-				printf("NULL");
-				break;
-			case 2:
-				printf("%s",p->valor.valors);
-				gotoxy(52-(int)strlen(p->id)/2,i);
-				printf("NULL");
-				break;
-			case 3:
-				printf("",p->valor.valori);
-				gotoxy(52-(int)strlen(p->id)/2,i);
-				printf("%d",p->valor.ponteiro);
-				break;
-		}
-		
-		i++;
-		p=p->prox;
-		if(p!=NULL){
-			gotoxy(1,i);
-			printf("%c",204);
-			j=i;
-			for(i=2;i<63;i++){
-				gotoxy(i,j);
-				printf("%c",205);
-				if(i==21 || i==42){
-					gotoxy(i,j);
-					printf("%c",206);
-				}
-			}
-			gotoxy(i,j);
-				printf("%c",185);
-			i=j+1;
-		}	
-	}
-	gotoxy(1,i);
-	printf("%c",200);
-	j=i;
-	for(i=2;i<63;i++){
-		gotoxy(i,j);
-		printf("%c",205);
-		if(i==21 || i==42){
-			gotoxy(i,j);
-			printf("%c",202);
-		}
-	}
-	gotoxy(i,j);
-		printf("%c",188);
+void ExibePilha(Pilha *p, int colunaInicial, int linhaInicial){
+    int i, j, vet[2];
+    vet[0] = colunaInicial + 16;
+    vet[1] = vet[0] + 16;
+
+    // Topo da caixa
+    gotoxy(colunaInicial, linhaInicial);
+    printf("%c", 201); // Canto superior esquerdo
+
+    for (i = colunaInicial + 1; i < 97; i++) {
+        gotoxy(i, linhaInicial);
+        if (i == vet[0] || i == vet[1])
+            printf("%c", 203); // Divisões de colunas
+        else
+            printf("%c", 205); // Linha horizontal
+    }
+
+    gotoxy(97, linhaInicial); 
+    printf("%c", 187); // Canto superior direito
+
+    // Exibição dos elementos da pilha
+    i = linhaInicial;
+    while (p != NULL) {
+        i++;
+        gotoxy(colunaInicial, i);
+        printf("%c", 186); // Borda esquerda
+        gotoxy(vet[0], i);
+        printf("%c", 186); // Divisória
+        gotoxy(vet[1], i);
+        printf("%c", 186); // Divisória
+        gotoxy(97, i);
+        printf("%c", 186); // Borda direita
+
+        // Exibe o id centralizado
+       gotoxy(vet[0]-10, i);
+        printf("%s", p->id);
+
+        // Exibe o valor com base no tipo
+        switch (p->terminal) {
+            case 0: // Valor inteiro
+                gotoxy(vet[1]-10, i);
+                printf("%d", p->valor.valori);
+                break;
+            case 1: // Valor float
+                gotoxy(vet[1]-10, i);
+                printf("%.2f", p->valor.valorf);
+                break;
+            case 2: // Valor string
+                gotoxy(vet[1]-10, i);
+                printf("%s", p->valor.valors);
+                break;
+        }
+
+        // Exibe ponteiro ou "NULL"
+        if (p->terminal != 3) {
+            gotoxy(78, i);
+            printf("NULL");
+        } else {
+            gotoxy(78, i);
+            printf("%d", p->valor.ponteiro);
+        }
+
+        // Linha divisória inferior
+        i++;
+        gotoxy(colunaInicial, i);
+        printf("%c", 204); // Divisão esquerda
+
+        for (j = colunaInicial + 1; j < 97; j++) {
+            gotoxy(j, i);
+            if (j == vet[0] || j == vet[1])
+                printf("%c", 206); // Divisões de colunas
+            else
+                printf("%c", 205); // Linha horizontal
+        }
+
+        gotoxy(97, i);
+        printf("%c", 185); // Divisão direita
+
+        // Próximo elemento da pilha
+        p = p->prox; 
+    }
+
+    // Base da caixa
+    gotoxy(colunaInicial, ++i);
+    printf("%c", 200); // Canto inferior esquerdo
+
+    for (j = colunaInicial + 1; j < 97; j++) {
+        gotoxy(j, i);
+        if (j == vet[0] || j == vet[1])
+            printf("%c", 202); // Divisões de colunas
+        else
+            printf("%c", 205); // Linha horizontal
+    }
+
+    gotoxy(97, i);
+    printf("%c", 188); // Canto inferior direito
 }
+
 
 Pilha* BuscaVariavel(char id[TFI],Pilha *pVariaveis){//Essa busca verifica se existe aquela variavel na pilha naquele escopo
 	Pilha *aux;

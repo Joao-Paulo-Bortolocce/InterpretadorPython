@@ -81,7 +81,12 @@ void encontraLinhaInicial(ListaGeral *lista,int coluna,int *linha){
 		aux=aux->ant;
 	while(aux!=lista && aux->prox!=lista){
 		aux=aux->prox;
+<<<<<<< HEAD
 		(*linha)+=1;
+=======
+		if(stricmp(aux->tokens->token,"@"))
+			(*linha)+=1;
+>>>>>>> c4feb3ff57b87d98a6708121e27215545bd4f731
 	}
 	if(aux!=lista){
 		printaLinhaNormal(aux,coluna,*linha);
@@ -91,7 +96,10 @@ void encontraLinhaInicial(ListaGeral *lista,int coluna,int *linha){
 }
 
 void MarcaLinha(ListaGeral *lista,int coluna,int linha){
+<<<<<<< HEAD
 	system("cls");
+=======
+>>>>>>> c4feb3ff57b87d98a6708121e27215545bd4f731
 	exibeLinhas(lista,coluna,linha);
 	encontraLinhaInicial(lista,coluna,&linha);
 	printaLinhaMarcada(lista,coluna,linha);
