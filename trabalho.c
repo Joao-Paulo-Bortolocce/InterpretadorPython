@@ -164,14 +164,14 @@ void exibirPrints(){
 	}
 }
 
-void Executar(ListaGeral *programa,Pilha **pVariaveis, char *flagIf){
-	char op,flag=1;
+void Executar(ListaGeral *programa,Pilha **pVariaveis){
+	char op,flag=1, flagIf = 1;
 	while(programa!=NULL){
 		op=getch();
 		switch(op){
 			case 13:
 				if(flag)
-					ExecutarLinha(&programa,&(*pVariaveis), flagIf);
+					ExecutarLinha(&programa,&(*pVariaveis), &flagIf);
 				break;
 			case 65: //F7
 				system("cls");
@@ -192,7 +192,7 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis, char *flagIf){
 			
 		}
 		if(programa!=NULL && op==13){
-			MarcaLinha(programa);
+			//MarcaLinha(programa);
 			programa=programa->prox;
 		}
 	}
@@ -207,7 +207,6 @@ void abrirPrints(){
 }
 
 int main(){
-	char flagIf = 1;
 	setlocale(LC_NUMERIC, "C");
 	abrirPrints();
 	ListaGeral *programa;
@@ -215,6 +214,6 @@ int main(){
 	Pilha *pVariaveis; //Criando a pilha de variaveis;
 	InitPilha(&pVariaveis);
 	Preparar(&programa);
-	Executar(programa,&pVariaveis, &flagIf);
+	Executar(programa,&pVariaveis);
 	return 0;
 }

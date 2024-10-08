@@ -363,25 +363,46 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 	
 }
 
-void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis ){
+void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis, char *flagIf){
+	PilhaIf *pilha;
+	int i, j;
+	char string[50];
 	switch(VerificaPrimeiroToken((*programa)->tokens)){
-		case 0:
-			Pilha *pilha = criarPilha();
-			if(resolveComParenteses((*progama)->linha, pilha, ))
+		case 0: //if
+			pilha = criarPilha();
+			for(i = 3, j = 0; i < strlen((*programa) -> linha); i++, j++)
+				string[j] = (*programa) -> linha[i];
+			if(resolveComParenteses(string, pilha, *pVariaveis))
 			{
-				Executar((*programa)->prox,&(*pVariaveis), flagIf);
+				Executar((*programa)->prox,&(*pVariaveis));
 				*flagIf = 0;
 				
 			}
+			destruirPilha(pilha);
 			posicionaCorretamente(&(*programa));
 			break;
-		case 1: 
-			Pilha *pilha = criarPilha();
-			if(resolveComParenteses() && (*flagIf))
+		case 1: //elif
+			pilha = criarPilha();
+			for(i = 5, j = 0; i < strlen((*programa) -> linha); i++, j++)
+				string[j] = (*programa) -> linha[i];
+			if(resolveComParenteses(string, pilha, *pVariaveis) && *flagIf)
 			{
-				Executar(());
+				Executar((*programa)->prox,&(*pVariaveis));
 				*flagIf = 0;
 			}
+			destruirPilha(pilha);
+			posicionaCorretamente(&(*programa));
+			break;
+		case 2: //else
+			pilha = criarPilha();
+			if(*flagIf)
+			{
+				Executar((*programa) -> prox, &(*pVariaveis));
+				*flagIf = 0;
+			}
+			destruirPilha(pilha);
+			posicionaCorretamente(&(*programa));
+			break;
 		case 3:
 			Repeticao(&(*programa),&(*pVariaveis),0);
 			break;
