@@ -266,5 +266,12 @@ int main(){
 	system("cls");
 	Moldura();
 	Executar(programa,&pVariaveis);
+	LimpaMensagem();
+	gotoxy(35,7);
+	printf("Tela do Computador!");
+	LimpaTudo(37, 10, 98,25);
+	exibirPrints(39,11);
+	fflush(stdin);
+	getch();
 	return 0;
 }
