@@ -3,13 +3,13 @@
 #include<math.h>
 #include<malloc.h>
 #include<locale.h>
-
+#include"interface.h"
 #include"Tokens.h"
 #include"ListaPrograma.h"
 #include"PilhaVariaveis.h"
 #include"EquacaoGeneralizada.h"
 #include "ExecutandoIf.h"
-void Executar(ListaGeral *programa,Pilha **pVariaveis );
+void Executar(ListaGeral *programa,Pilha **pVariaveis);
 #include"Execucao.h"
 
 
@@ -93,8 +93,12 @@ void RecebeArquivo(char caminho[TFC],ListaGeral **programa){
 	ListaTokens *tokens;
 	InitTokens(&tokens);
 	FILE*ponteiro= fopen(caminho,"r");
-	if(ponteiro==NULL)
+	if(ponteiro==NULL){
 		printf("Seu arquivo nao existe ou nao foi encontrado");
+		fflush(stdin);
+		getch();
+	}
+		
 	else{
 		while(!feof(ponteiro)){
 			fgets(linha,sizeof(linha),ponteiro); 
@@ -142,62 +146,107 @@ void Preparar(ListaGeral** programa){
 	printf("Informe o caminho do arquivo .py Ex: [C://teste.py]");
 	gets(caminho);
 	RecebeArquivo(caminho,&(*programa));
-	ExibeGeral(*programa);
-	exibeLinhas(*programa);
 	EncontraInicio(&(*programa)); //Função para encontrar a primeira linha que será executada
-	printf("\n\nO inicio do programa esta no endereco: %d",*programa);
+	//printf("\n\nO inicio do programa esta no endereco: %d",*programa);
 }
 
-void exibirPrints(){
-	system("cls");
-	printf("\t\t\t\t\tTELA DO COMPUTADOR\n");
-	char linha[TFL];
+void exibirPrints(int coluna,int linha){
+	char linhas[TFL];
+	int cont=0;
 	FILE*ponteiro=fopen("Prints.txt","r");
-	if(ponteiro==NULL)
-		printf("Erro ao exibir prints\n");
+	if(ponteiro==NULL){
+		gotoxy(coluna,linha);
+		printf("Erro ao exibir prints, pressione qualquer tecla para continuar");
+		fflush(stdin);
+		getch();
+		LimpaTudo(coluna, linha, 98,25);
+	}
 	else{
-		fgets(linha,TFL,ponteiro);
+		fgets(linhas,TFL,ponteiro);
 		while(!feof(ponteiro)){
-			printf("%s",linha);
-			fgets(linha,TFL,ponteiro);
+			gotoxy(coluna,linha);
+			printf("%s",linhas);
+			fgets(linhas,TFL,ponteiro);
+			linha++;
+			cont++;
 		}
+		if(cont==0){
+			gotoxy(coluna,linha);
+			printf("Nao foi exibido nenhuma mensagem ate o momento!");
+		}
+			
 	}
 }
 
+void exibeMenu(){
+	int coluna=5,linha=12;
+	gotoxy(coluna,linha);
+	printf("[F7] - Codigo Fonte");
+	linha+=2;
+	gotoxy(coluna,linha);
+	printf("[F8] - Passo a Passo");
+	linha+=2;
+	gotoxy(coluna,linha);
+	printf("[F9] - Pilha de Variaveis");
+	linha+=2;
+	gotoxy(coluna,linha);
+	printf("[F10] - Tela do Computador");
+	linha+=2;
+	gotoxy(35,7);
+		printf("Executando passo a passo!");
+}
+
 void Executar(ListaGeral *programa,Pilha **pVariaveis){
-	char op,flag=1, flagIf = 1;
+	char op,flag=1,flagIf=1;
+	int coluna=38,linha=10;
+	MarcaLinha(programa,coluna+1,linha+1);
+	exibeMenu();
 	while(programa!=NULL){
 		op=getch();
 		switch(op){
 			case 13:
 				if(flag)
 					ExecutarLinha(&programa,&(*pVariaveis), &flagIf);
+					if(programa!=NULL && flag){
+						programa=programa->prox;
+						if(programa!=NULL && VerificaPrimeiroToken(programa->tokens)!=6)
+							MarcaLinha(programa,coluna+1,linha+1);
+					}
 				break;
 			case 65: //F7
-				system("cls");
-				exibeLinhas(programa);
-				flag=1;
+				LimpaMensagem();
+				gotoxy(35,7);
+				printf("Codigo fonte em PYTHON!");
+				LimpaTudo(coluna, linha, 98,25);
+				exibeLinhas(programa,coluna+1,linha+1);
+				flag=0;
 				break;
 			case 66://F8
-				flag=0;
+				LimpaMensagem();
+				gotoxy(35,7);
+				printf("Executando passo a passo!");
+				LimpaTudo(coluna-1, linha, 98,25);
+				MarcaLinha(programa,coluna+1,linha+1);
+				flag=1;
 				break;
 			case 67://F9
+				LimpaMensagem();
+				gotoxy(35,7);
+				printf("Pilha de Variaveis!");
 				flag=0;
-				ExibePilha(*pVariaveis);
+				LimpaTudo(coluna-1, linha, 98,25);
+				ExibePilha(*pVariaveis,coluna,linha);
 				break;
 			case 68://F10
+				LimpaMensagem();
+				gotoxy(35,7);
+				printf("Tela do Computador!");
 				flag=0;
-				exibirPrints();
+				LimpaTudo(coluna-1, linha, 98,25);
+				exibirPrints(coluna+1,linha+1);
 				break;
-			
-		}
-		if(programa!=NULL && op==13){
-			//MarcaLinha(programa);
-			programa=programa->prox;
 		}
 	}
-	
-	
 }
 
 
@@ -214,6 +263,8 @@ int main(){
 	Pilha *pVariaveis; //Criando a pilha de variaveis;
 	InitPilha(&pVariaveis);
 	Preparar(&programa);
+	system("cls");
+	Moldura();
 	Executar(programa,&pVariaveis);
 	return 0;
 }

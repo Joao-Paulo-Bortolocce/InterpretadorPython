@@ -13,9 +13,9 @@ typedef struct {
 char testaCondicao(char terminal, char opera[], union Variavel v1, union Variavel v2) {
 	
 	if(strcmp(opera, "==") == 0) {
-		if(terminal == '0')
+		if(terminal == 0)
 			return v1.inteiro == v2.inteiro;
-		else if(terminal == '1')
+		else if(terminal == 1)
 				return v1.quebrado == v2.quebrado;
 			else {
 				if(strcmp(v1.string, v2.string) == 0)
@@ -23,9 +23,9 @@ char testaCondicao(char terminal, char opera[], union Variavel v1, union Variave
 				return 0;
 			}
 	} else if(strcmp(opera, "!=") == 0) {
-			if(terminal == '0')
+			if(terminal == 0)
 				return v1.inteiro != v2.inteiro;
-			else if(terminal == '1')
+			else if(terminal == 1)
 				return v1.quebrado != v2.quebrado;
 				else {
 					if(strcmp(v1.string, v2.string) != 0)
@@ -34,9 +34,9 @@ char testaCondicao(char terminal, char opera[], union Variavel v1, union Variave
 				}
 		
 	} else if(strcmp(opera, ">") == 0){
-			if(terminal == '0')
+			if(terminal == 0)
 				return v1.inteiro > v2.inteiro;
-			else if(terminal == '1')
+			else if(terminal == 1)
 				return v1.quebrado > v2.quebrado;
 				else{
 					if(strcmp(v1.string, v2.string) > 0)
@@ -44,9 +44,9 @@ char testaCondicao(char terminal, char opera[], union Variavel v1, union Variave
 					return 0;
 				}
 	} else if(strcmp(opera, ">=") == 0){
-			if(terminal == '0')
+			if(terminal == 0)
 				return v1.inteiro >= v2.inteiro;
-			else if (terminal == '1')
+			else if (terminal == 1)
 				return v1.quebrado >= v2.quebrado;
 				else{
 					if(strcmp(v1.string, v2.string) >= 0)
@@ -54,9 +54,9 @@ char testaCondicao(char terminal, char opera[], union Variavel v1, union Variave
 					return 0;
 				}
 	} else if(strcmp(opera, "<") == 0){
-			if(terminal == '0')
+			if(terminal == 0)
 				return v1.inteiro < v2.inteiro;
-			else if(terminal == '1')
+			else if(terminal == 1)
 				return v1.quebrado < v2.quebrado;
 				else{
 					if(strcmp(v1.string, v2.string) < 0)
@@ -64,9 +64,9 @@ char testaCondicao(char terminal, char opera[], union Variavel v1, union Variave
 					return 0;
 				}
 	} else if(strcmp(opera, "<=") == 0){
-			if(terminal == '0')
+			if(terminal == 0)
 				return v1.inteiro <=  v2.inteiro;
-			else if(terminal == '1')
+			else if(terminal == 1)
 				return v2.quebrado <= v2.quebrado;
 				else{
 					if(strcmp(v1.string, v2.string) <= 0)
@@ -173,20 +173,24 @@ char isFloat(char array[])
 int testaIf(char *string, PilhaIf *p, Pilha *pVariaveis) {
     union Variavel v1, v2;
     int i = 0, pos = 0, verificaFloat;
-    char opera[4];
+    char opera[4],flag=1;
     char buffer[100]; // Para armazenar números temporariamente
     Pilha *pilha;
 	
-    while (string[i] != ':') {
-        if ((string[i] == '1' || string[i] == '0') && (string[i + 2] == 'a' || string[i + 1] == 'o' || string[i + 1] == '\0')) { 
+    while (i<strlen(string) && string[i] != ':') {
+    	if((string[i]=='a' && string[i+1]=='n' && string[i+2]=='d' && string[i+3]==' ')|| (string[i]=='o' && string[i+1]=='r' && string[i+2]==' ') )
+    		flag=0;
+        if (flag && (string[i] == '1' || string[i] == '0') && (string[i + 2] == 'a' || string[i + 2] == 'o' || string[i + 1] == ':')) { 
             // Verificando a possibilidade de "1 and 1"
             push(p, string[i] - '0');
         }
-        if (string[i] >= 'a' && string[i] <= 'z' || string[i] >= 'A' && string[i] <= 'Z') {
+        if (flag && string[i] >= 'a' && string[i] <= 'z' || string[i] >= 'A' && string[i] <= 'Z') {
             // Limpa o buffer para armazenar a variável
             pos = 0;
             while (string[i] >= 'a' && string[i] <= 'z' || string[i] >= 'A' && string[i] <= 'Z') {
-                buffer[pos++] = string[i++];
+                buffer[pos] = string[i];
+                pos++;
+                i++;
             }
             buffer[pos] = '\0';
             
@@ -204,27 +208,23 @@ int testaIf(char *string, PilhaIf *p, Pilha *pVariaveis) {
                 // Se a variável não for encontrada, assumimos que é uma string literal
                 strcpy(v1.string, buffer);
             }
-        } else if (string[i] >= '0' && string[i] <= '9') {
+        } else if (flag && string[i] >= '0' && string[i] <= '9') {
             // Processa números
             pos = 0;
             while (string[i] >= '0' && string[i] <= '9' || string[i] == '.') {
                 buffer[pos++] = string[i++];
             }
             buffer[pos] = '\0';
-			
-			verificaFloat = isFloat(buffer);
-			
-            if (verificaFloat) {
-                v1.quebrado = atof(buffer); // Converte para float se for decimal
-            } else {
-                v1.inteiro = atoi(buffer); // Converte para inteiro
-            }
-        } else if (string[i] == '>' || string[i] == '=' || string[i] == '<' || string[i] == '!') {
+			v1.quebrado = atof(buffer);
+        } else if (flag && string[i] == '>' || string[i] == '=' || string[i] == '<' || string[i] == '!') {
             // Lê o operador de comparação
             pos = 0;
-            opera[pos++] = string[i];
+            opera[pos] = string[i];
+            pos++;
             if (string[i + 1] == '=' || string[i + 1] == '>' || string[i + 1] == '<') {
-                opera[pos++] = string[++i];
+                i++;
+				opera[pos] = string[i];
+                pos++;
             }
             opera[pos] = '\0';
             i++; // Avança para o próximo caractere
@@ -234,7 +234,9 @@ int testaIf(char *string, PilhaIf *p, Pilha *pVariaveis) {
             if (string[i] >= 'a' && string[i] <= 'z' || string[i] >= 'A' && string[i] <= 'Z') {
                 pos = 0;
                 while (string[i] >= 'a' && string[i] <= 'z' || string[i] >= 'A' && string[i] <= 'Z') {
-                    buffer[pos++] = string[i++];
+                    buffer[pos] = string[i];
+                    pos++;
+                    i++;
                 }
                 buffer[pos] = '\0';
                 
@@ -253,17 +255,13 @@ int testaIf(char *string, PilhaIf *p, Pilha *pVariaveis) {
             } else if (string[i] >= '0' && string[i] <= '9') {
                 pos = 0;
                 while (string[i] >= '0' && string[i] <= '9' || string[i] == '.') {
-                    buffer[pos++] = string[i++];
+                    buffer[pos] = string[i];
+                    i++;
+                    pos++;
                 }
                 buffer[pos] = '\0';
-				
-				verificaFloat = isFloat(buffer);
-				
-                if (verificaFloat) {
-                    v2.quebrado = atof(buffer); // Converte para float
-                } else {
-                    v2.inteiro = atoi(buffer); // Converte para inteiro
-                }
+                v2.quebrado = atof(buffer); // Converte para float
+                 
             }
 
             // Processa a comparação
@@ -279,6 +277,7 @@ int testaIf(char *string, PilhaIf *p, Pilha *pVariaveis) {
             }
         }
         i++;
+        flag=1;
     }
 
     return resolvePilha(p); // Retorna o resultado final da pilha
@@ -293,7 +292,8 @@ int resolveComParenteses(char *string, PilhaIf *p, Pilha *pVariaveis) {
         pos = 0;
 
         for (i = inicio + 1; i < fim; i++) {
-            subexpressao[pos++] = string[i];
+            subexpressao[pos] = string[i];
+            pos++;
         }
         subexpressao[pos] = '\0';
         resultado = testaIf(subexpressao, p, pVariaveis);
@@ -305,20 +305,22 @@ int resolveComParenteses(char *string, PilhaIf *p, Pilha *pVariaveis) {
         }
 
         if (resultado == 0) {
-            novaString[pos++] = '0';
+            novaString[pos] = '0';
+            pos++;
         } else {
-            novaString[pos++] = '1';
+            novaString[pos] = '1';
+            pos++;
         }
 
         for (i = fim + 1; string[i] != '\0'; i++) {
-            novaString[pos++] = string[i];
+            novaString[pos] = string[i];
+            pos++;
         }
 
         novaString[pos] = '\0';
 
         strcpy(string, novaString);
     }
-    printf("String: %s\n", string);
     return testaIf(string, p, pVariaveis);
 }
 

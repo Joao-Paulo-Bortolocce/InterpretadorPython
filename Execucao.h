@@ -159,27 +159,28 @@ char ResolveCondicao(Valor variavel,char terminal,char operador[],Valor parada){
 }
 
 void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
-	int incremento;
+	int incremento,valori,i,j;
 	Valor p;
+	PilhaIf *pilha;
 	ListaTokens *aux=(*programa)->tokens;
-	char operador[3];
+	char operador[3],string[TFL];
 	Pilha *var = BuscaVariavel(aux->prox->token,*pVariaveis);
 	if(var==NULL){
-		Push(&(*pVariaveis),0,aux->prox->token,0);
+		Push(&(*pVariaveis),1,aux->prox->token,0);
 		var=*pVariaveis;
 	}
 		
-	if(flag){ //RECEBI FLAG 1 QUANDO A REPETI��O FOR "FOR" E 0 QUANDO FOR WHILE
+	if(flag){ //RECEBI FLAG 1 QUANDO A REPETIï¿½ï¿½O FOR "FOR" E 0 QUANDO FOR WHILE
 		while(stricmp(aux->token,"(")) //Encontra o primeiro parenteses do for, para verificar incremento, parada e inicio
 			aux=aux->prox;
 		aux=aux->prox;
-		if(!stricmp(aux->prox->token,")")){//verificar quantos crit�rios p�ssuem inicio, parada e incremento, NESTE CASO O FOR S� PASSA CRIT�RIO DE PARADA
+		if(!stricmp(aux->prox->token,")")){//verificar quantos critï¿½rios pï¿½ssuem inicio, parada e incremento, NESTE CASO O FOR Sï¿½ PASSA CRITï¿½RIO DE PARADA
 			p.valori=atoi(aux->token);
 			incremento=1;
-			var->valor.valori=0;
+			var->valor.valorf=0;
 		}
 		else{
-			var->valor.valori=atoi(aux->token);
+			var->valor.valorf=atoi(aux->token);
 			p.valori=atoi(aux->prox->token);
 			aux=aux->prox;
 			aux=aux->prox;
@@ -188,22 +189,34 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 			else
 				incremento=1;
 		}
-		while(var->valor.valori <p.valori){
-			Executar((*programa)->prox,&(*pVariaveis)); //Executa at� encontrar o fim "@"
-			var->valor.valori+=incremento;
+		valori=var->valor.valorf;
+		while(var->valor.valorf <p.valori){
+			Executar((*programa)->prox,&(*pVariaveis)); //Executa atï¿½ encontrar o fim "@"
+			valori+=incremento;
+			var->valor.valorf=valori;
 		}
 		
 	}
 	else{
-		aux=aux->prox;
+		pilha = criarPilha();
+		for(i = 6, j = 0; i < strlen((*programa) -> linha); i++, j++)
+			string[j] = (*programa) -> linha[i];
+		string[j]='\0';
+		while(resolveComParenteses(string, pilha, *pVariaveis))
+		{
+			Executar((*programa)->prox,&(*pVariaveis));
+		}
+		destruirPilha(pilha);
+		
+	/*	aux=aux->prox;
 		aux=aux->prox;
 		strcpy(operador,aux->token);
 		aux=aux->prox;
-		p.valori = atoi(aux->token); //S� funciona com numero.
+		p.valori = atoi(aux->token); //Sï¿½ funciona com numero.
 		while(ResolveCondicao(var->valor,var->terminal,operador,p)){
 			Executar((*programa)->prox,&(*pVariaveis));
-			var->valor.valori+=1; //ESSA PARTE � S� PARA N�O FICAR INFINITO, POIS ATRIBUI��O AINDA N�O EXISTE
-		}
+			var->valor.valori+=1; //ESSA PARTE ï¿½ Sï¿½ PARA Nï¿½O FICAR INFINITO, POIS ATRIBUIï¿½ï¿½O AINDA Nï¿½O EXISTE
+		}*/
 			
 	}
 	posicionaCorretamente(&(*programa));
@@ -264,7 +277,7 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 					variavel->valor.valorf=var;
 			}
 		}
-		if(stricmp(auxL->token,"%")){
+		if(stricmp(auxL->token,"%") && stricmp(auxL->token,")")){
 			variavel=BuscaVariavel(tokens->token,*pVariaveis);
 				if(variavel!=NULL){
 					var=variavel->valor.valorf;
@@ -294,7 +307,7 @@ void Print(ListaGeral *programa, Pilha **pVariaveis){
 		print[tl]='\n';
 		print[tl+1]='\0';
 	}
-	else{
+	else if(stricmp(auxL->token,")")){
 		variavel=BuscaVariavel(tokens->token,*pVariaveis);
 		if(variavel!=NULL){
 			var=variavel->valor.valorf;
@@ -372,6 +385,7 @@ void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis, char *flagIf){
 			pilha = criarPilha();
 			for(i = 3, j = 0; i < strlen((*programa) -> linha); i++, j++)
 				string[j] = (*programa) -> linha[i];
+			string[j]='\0';
 			if(resolveComParenteses(string, pilha, *pVariaveis))
 			{
 				Executar((*programa)->prox,&(*pVariaveis));

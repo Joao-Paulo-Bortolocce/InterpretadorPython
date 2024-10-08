@@ -48,13 +48,54 @@ void ExibeGeral(ListaGeral *lista){
 	printf("NULL");
 }
 
-void exibeLinhas(ListaGeral *lista){
-	printf("\n\nLINHAS DO PROGRAMA\n");
+void exibeLinhas(ListaGeral *lista,int coluna, int linha){
 	while(lista->ant!=NULL)
 		lista=lista->ant;
 	while(lista!=NULL){
-		if(stricmp(lista->tokens->token,"@"))
+		gotoxy(coluna,linha);
+		if(stricmp(lista->tokens->token,"@")){
 			printf("%s",lista->linha);
+			linha++;
+		}
 		lista=lista->prox;
 	}
+}
+
+void printaLinhaNormal(ListaGeral *lista,int coluna,int linha){
+	gotoxy(coluna,linha);
+	textcolor(15);
+	textbackground(0);
+	printf("%s",lista->linha);
+}
+
+void printaLinhaMarcada(ListaGeral *lista,int coluna,int linha){
+	gotoxy(coluna,linha);
+	textcolor(0);
+	textbackground(3);
+	printf("%s",lista->linha);
+}
+
+void encontraLinhaInicial(ListaGeral *lista,int coluna,int *linha){
+	ListaGeral *aux=lista;
+	while(aux->ant!=NULL)
+		aux=aux->ant;
+	while(aux!=lista && aux->prox!=lista){
+		aux=aux->prox;
+		if(stricmp(aux->tokens->token,"@"))
+			(*linha)+=1;
+	}
+	if(aux!=lista){
+		printaLinhaNormal(aux,coluna,*linha);
+		(*linha)+=1;
+	}
+		
+}
+
+void MarcaLinha(ListaGeral *lista,int coluna,int linha){
+	exibeLinhas(lista,coluna,linha);
+	encontraLinhaInicial(lista,coluna,&linha);
+	printaLinhaMarcada(lista,coluna,linha);
+	textcolor(15);
+	textbackground(0);
+	
 }
