@@ -90,7 +90,7 @@ void Moldura()
 {
 	int i;
 	
-	Bordas(2,2,101,28,6);//Principal
+	Bordas(2,2,112,28,6);//Principal
 	textcolor(6);
 	gotoxy(38,3); printf("TRABALHO ESTRUTURA DE DADOS II");
 	gotoxy(45,4); printf("Interpretador Python");
@@ -100,9 +100,9 @@ void Moldura()
 	gotoxy(36, 4); printf("%c",245);
 	gotoxy(68, 4); printf("%c",245);
 	
-	Bordas(4,6,99,8,1);//Mensagem
+	Bordas(4,6,110,8,1);//Mensagem
 	Bordas(4,9,35,26,1);// Menu de Escolha
-	Bordas(36,9,99,26,1);//Menu de Apresentar
+	Bordas(36,9,110,26,1);//Menu de Apresentar
 }
 
 void LimpaBorda()

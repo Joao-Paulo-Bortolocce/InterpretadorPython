@@ -283,7 +283,18 @@ float SolucionaExpressao(No *expressao){
 	return calcula(&aux);
 }
 
+No* destruirNos(No *l){
+	if(l!=NULL){
+		l->cauda=destruirNos(l->cauda);
+		l->cabeca=destruirNos(l->cabeca);
+		free(l);
+	}
+	return NULL;
+}
+
 float  ResolveExpressao(ListaTokens* linha,Pilha *pVariaveis){
 	No *expressao=montaLista(linha,pVariaveis);
-	return  SolucionaExpressao(expressao);
+	float resp = SolucionaExpressao(expressao);
+	expressao = destruirNos(expressao);
+	return resp;
 }

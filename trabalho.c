@@ -159,7 +159,7 @@ void exibirPrints(int coluna,int linha){
 		printf("Erro ao exibir prints, pressione qualquer tecla para continuar");
 		fflush(stdin);
 		getch();
-		LimpaTudo(coluna, linha, 98,25);
+		LimpaTudo(coluna, linha, 108,25);
 	}
 	else{
 		fgets(linhas,TFL,ponteiro);
@@ -217,7 +217,7 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis){
 				LimpaMensagem();
 				gotoxy(35,7);
 				printf("Codigo fonte em PYTHON!");
-				LimpaTudo(coluna, linha, 98,25);
+				LimpaTudo(coluna, linha, 108,25);
 				exibeLinhas(programa,coluna+1,linha+1);
 				flag=0;
 				break;
@@ -225,7 +225,7 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis){
 				LimpaMensagem();
 				gotoxy(35,7);
 				printf("Executando passo a passo!");
-				LimpaTudo(coluna-1, linha, 98,25);
+				LimpaTudo(coluna-1, linha, 108,25);
 				MarcaLinha(programa,coluna+1,linha+1);
 				flag=1;
 				break;
@@ -234,7 +234,7 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis){
 				gotoxy(35,7);
 				printf("Pilha de Variaveis!");
 				flag=0;
-				LimpaTudo(coluna-1, linha, 98,25);
+				LimpaTudo(coluna-1, linha, 108,25);
 				ExibePilha(*pVariaveis,coluna,linha);
 				break;
 			case 68://F10
@@ -242,7 +242,7 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis){
 				gotoxy(35,7);
 				printf("Tela do Computador!");
 				flag=0;
-				LimpaTudo(coluna-1, linha, 98,25);
+				LimpaTudo(coluna-1, linha, 108,25);
 				exibirPrints(coluna+1,linha+1);
 				break;
 		}
@@ -253,6 +253,23 @@ void Executar(ListaGeral *programa,Pilha **pVariaveis){
 void abrirPrints(){
 	FILE * ponteiro= fopen("Prints.txt","w");
 	fclose(ponteiro);
+}
+
+ListaTokens* matarTokens(ListaTokens *l){
+	if(l!=NULL){
+		matarTokens(l->prox);
+		free(l);
+	}
+	return NULL;
+}
+
+ListaGeral * matarListas(ListaGeral *l){
+	if(l!=NULL){
+		l->tokens = matarTokens(l->tokens);
+		matarListas(l->prox);
+		free(l);
+	}
+	return NULL;
 }
 
 int main(){
@@ -269,9 +286,12 @@ int main(){
 	LimpaMensagem();
 	gotoxy(35,7);
 	printf("Tela do Computador!");
-	LimpaTudo(37, 10, 98,25);
+	LimpaTudo(37, 10, 108,25);
 	exibirPrints(39,11);
 	fflush(stdin);
 	getch();
+	while(programa!= NULL && programa ->ant!=NULL)
+		programa=programa->ant;
+	programa = matarListas(programa);
 	return 0;
 }

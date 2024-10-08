@@ -1,8 +1,6 @@
-*
-1.00
-*
-*
-2.00
-*
-*
-*
+Temos as seguintes medias:
+Joao - Media 1: 9
+Pedro - Media 2: 10
+Maria - Media 3: 7
+Ana - Media 4: 4
+A media da turma foi de: 7.50

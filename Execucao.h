@@ -199,7 +199,7 @@ void Repeticao(ListaGeral **programa, Pilha **pVariaveis,char flag){
 	}
 	else{
 		pilha = criarPilha();
-		for(i = 6, j = 0; i < strlen((*programa) -> linha); i++, j++)
+		for(i =6, j = 0; i < strlen((*programa) -> linha); i++, j++)
 			string[j] = (*programa) -> linha[i];
 		string[j]='\0';
 		while(resolveComParenteses(string, pilha, *pVariaveis))
@@ -355,14 +355,20 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 		variavel->terminal=2;
 	}
 	else{ // quer dizer que � um n�mero ou uma fun��o ou lista ou variavel
-		if(stricmp(linha->token,"("))
-			aux=BuscaVariavel(linha->token,*pVariaveis);	
-		else
+		if(stricmp(linha->token,"(")){
+			aux=BuscaVariavel(linha->token,*pVariaveis);
+			if(aux!=NULL)
+				tipo=aux->terminal;
+			else
+				tipo=DefineTipo(linha->token);
+		}		
+		else{
 			aux=BuscaVariavel(linha->prox->token,*pVariaveis);
-		if(aux!=NULL)
-			tipo=aux->terminal;
-		else
-			tipo=DefineTipo(linha->token);
+			if(aux!=NULL)
+				tipo=aux->terminal;
+			else
+				tipo=DefineTipo(linha->prox->token);
+		}	
 		switch(tipo){
 			case 0: case 1:
 				variavel->valor.valorf= ResolveExpressao(linha,*pVariaveis);
@@ -379,11 +385,12 @@ void Atribuicao(ListaGeral *programa, Pilha **pVariaveis){
 void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis, char *flagIf){
 	PilhaIf *pilha;
 	int i, j;
-	char string[50];
+	char string[70];
 	switch(VerificaPrimeiroToken((*programa)->tokens)){
 		case 0: //if
 			pilha = criarPilha();
-			for(i = 3, j = 0; i < strlen((*programa) -> linha); i++, j++)
+			for(i=0;i < strlen((*programa) -> linha) && (*programa) -> linha[i]!= ' ';i++);
+			for(i =i+ 3, j = 0; i < strlen((*programa) -> linha); i++, j++)
 				string[j] = (*programa) -> linha[i];
 			string[j]='\0';
 			if(resolveComParenteses(string, pilha, *pVariaveis))
@@ -392,19 +399,20 @@ void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis, char *flagIf){
 				*flagIf = 0;
 				
 			}
-			destruirPilha(pilha);
+			//destruirPilha(pilha);
 			posicionaCorretamente(&(*programa));
 			break;
 		case 1: //elif
 			pilha = criarPilha();
-			for(i = 5, j = 0; i < strlen((*programa) -> linha); i++, j++)
+			for(i=0;i < strlen((*programa) -> linha) && (*programa) -> linha[i]!= ' ';i++);
+			for(i = i+ 5, j = 0; i < strlen((*programa) -> linha); i++, j++)
 				string[j] = (*programa) -> linha[i];
 			if(resolveComParenteses(string, pilha, *pVariaveis) && *flagIf)
 			{
 				Executar((*programa)->prox,&(*pVariaveis));
 				*flagIf = 0;
 			}
-			destruirPilha(pilha);
+			//destruirPilha(pilha);
 			posicionaCorretamente(&(*programa));
 			break;
 		case 2: //else
@@ -414,7 +422,7 @@ void ExecutarLinha(ListaGeral **programa,Pilha **pVariaveis, char *flagIf){
 				Executar((*programa) -> prox, &(*pVariaveis));
 				*flagIf = 0;
 			}
-			destruirPilha(pilha);
+			//destruirPilha(pilha);
 			posicionaCorretamente(&(*programa));
 			break;
 		case 3:
